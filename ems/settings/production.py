@@ -23,12 +23,9 @@ DATABASES = {
     }
 }
 
-# Static files
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'),
-]
+STATIC_ROOT = '/app/staticfiles'
+STATICFILES_DIRS = ['/app/static']
 
 # Add MIME types mapping
 WHITENOISE_MIMETYPES = {
@@ -45,7 +42,7 @@ WHITENOISE_MIMETYPES = {
 }
 
 # Use this simpler storage backend
-STATICFILES_STORAGE = 'whitenoise.storage.StaticFilesStorage' 
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Add these whitenoise settings
 WHITENOISE_USE_FINDERS = True

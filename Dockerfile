@@ -1,34 +1,28 @@
 FROM python:3.9-slim
 
-# Set environment variables
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 ENV DJANGO_SETTINGS_MODULE=ems.settings.production
 
-# Install build dsps
 RUN apt-get update && apt-get install -y \
     build-essential \
     postgresql-client \
+    wget \
+    curl \
     && rm -rf /var/lib/apt/lists/*
 
-# Set work directory
 WORKDIR /app
 
-# Install Python dependencies
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-#install wget
-RUN apt-get update && apt-get install -y wget
-
-#install curl
-RUN apt-get update && apt-get install -y curl
-
-# Copy project
 COPY . .
-RUN chmod -R 755 /app/static
-# Create staticfiles directory and set permissions
-RUN mkdir -p /app/staticfiles && chmod 755 /app/staticfiles
 
-# Start Gunicorn
-CMD gunicorn ems.wsgi:application --bind 0.0.0.0:8000
+# Collect static files and set permissions
+RUN python manage.py collectstatic --noinput && \
+    chown -R root:root /app/static /app/staticfiles && \
+    chmod -R 755 /app/static /app/staticfiles
+
+EXPOSE 8000
+
+CMD gunicorn ems.wsgi:application --bind 0.0.0.0:8000 --workers 3
