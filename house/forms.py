@@ -4,7 +4,7 @@ from .models import House, Owner
 class HouseForm(forms.ModelForm):
     class Meta:
         model = House
-        fields = ['hse_number', 'unit_type', 'handover']
+        fields = ['hse_number', 'unit_type', 'status', 'handover']
 
 class OwnerForm(forms.ModelForm):
     class Meta:

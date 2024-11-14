@@ -6,12 +6,12 @@ class House(models.Model):
     STATUS_CHOICES = [
         ('vacant', 'Vacant'),
         ('owned', 'Owned'),
-        ('developer', 'Developer Owned'),
+        ('developer', 'Developer'),
     ]
         
     UNIT_CHOICES = [
-        ('2BR', '2Bedroom'),
-        ('3BR', '3Bedroom'),
+        ('2BR', '2 Bedroom'),
+        ('3BR', '3 Bedroom'),
     ]
     
     hse_number = models.CharField('House Number', max_length=50, unique=True)
@@ -20,8 +20,8 @@ class House(models.Model):
         choices=UNIT_CHOICES, 
         verbose_name='Unit Type'
     )
-    handover = models.DateTimeField(null=True, blank=True)
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='vacant')
+    handover = models.DateField(null=True, blank=True)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='developer')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

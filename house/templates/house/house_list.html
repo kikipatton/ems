@@ -440,6 +440,7 @@
                       <th class="d-none d-md-table-cell">Owner</th>
                       <th class="d-none d-md-table-cell">Phone</th>
                       <th class="d-none d-md-table-cell">Email</th>
+                      <th class="d-none d-md-table-cell">Nationality</th>
                       <th>Action</th>
                     </tr>
                   </thead>
@@ -448,15 +449,7 @@
                         <tr>
                             <td>{{ house.hse_number }}</td>
                             <td>{{ house.get_unit_type_display }}</td>
-                            <td class="d-none d-md-table-cell">
-                                {% with owner=house.owner_set.first %}
-                                    {% if owner %}
-                                        {{ owner.get_full_name }}
-                                    {% else %}
-                                        <span class="text-muted">Vacant</span>
-                                    {% endif %}
-                                {% endwith %}
-                            </td>
+                            <td>{{ house.get_status_display }}</td>
                             <td class="d-none d-md-table-cell">
                                 {% with owner=house.owner_set.first %}
                                     {% if owner %}
@@ -475,22 +468,47 @@
                                     {% endif %}
                                 {% endwith %}
                             </td>
+                            <td class="d-none d-md-table-cell">
+                                {% with owner=house.owner_set.first %}
+                                    {% if owner %}
+                                        {{ owner.nationality }}
+                                    {% else %}
+                                        <span class="text-muted">-</span>
+                                    {% endif %}
+                                {% endwith %}
+                            </td>
                             <td>
                                 <div class="dropdown">
                                     <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                         Actions
                                     </button>
                                     <ul class="dropdown-menu">
-                                        <li><a class="dropdown-item" href="{% url 'house:house-update' house.pk %}">Edit House</a></li>
+                                        <li>
+                                            <a class="dropdown-item" 
+                                            href="javascript:void(0);" 
+                                            onclick="openEditModal('{{ house.pk }}', '{{ house.hse_number }}', '{{ house.unit_type }}', '{{ house.status }}', '{% if house.handover %}{{ house.handover|date:'Y-m-d' }}{% else %}{% endif %}')"
+                                            data-bs-toggle="modal" 
+                                            data-bs-target="#editHouseModal">
+                                                <i class="ti ti-edit me-1"></i> Edit
+                                            </a>
+                                        </li>
                                         {% with owner=house.owner_set.first %}
                                             {% if owner %}
-                                                <li><a class="dropdown-item" href="{% url 'house:owner-update' owner.pk %}">Edit Owner</a></li>
+                                                <li><a class="dropdown-item" href="{% url 'owner-update' owner.pk %}">Edit Owner</a></li>
                                             {% else %}
-                                                <li><a class="dropdown-item" href="{% url 'house:owner-create' %}?house={{ house.pk }}">Add Owner</a></li>
+                                                <li><a class="dropdown-item" href="{% url 'owner-create' %}?house={{ house.pk }}">Add Owner</a></li>
                                             {% endif %}
                                         {% endwith %}
                                         <li><hr class="dropdown-divider"></li>
-                                        <li><a class="dropdown-item text-danger" href="{% url 'house:house-delete' house.pk %}">Delete House</a></li>
+                                        <li>
+                                            <a class="dropdown-item text-danger" 
+                                            href="javascript:void(0);" 
+                                            onclick="openDeleteModal('{{ house.pk }}', '{{ house.hse_number }}')"
+                                            data-bs-toggle="modal" 
+                                            data-bs-target="#deleteHouseModal">
+                                                <i class="ti ti-trash me-1"></i> Delete
+                                            </a>
+                                        </li>
                                     </ul>
                                 </div>
                             </td>
@@ -527,6 +545,90 @@
               </div>
 
             <!--/ Content -->
+
+            <!-- Edit House Modal -->
+            <div class="modal fade" id="editHouseModal" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-lg modal-simple modal-dialog-centered">
+                    <div class="modal-content p-3 p-md-5">
+                        <div class="modal-body">
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <div class="text-center mb-4">
+                                <h3 class="mb-2">Edit House</h3>
+                                <p class="text-muted">Update house information</p>
+                            </div>
+                            <form id="editHouseForm" class="row g-3" method="post" action="">
+                                {% csrf_token %}
+                                <div class="col-12 col-md-6">
+                                    <label class="form-label" for="modal_hse_number">House Number</label>
+                                    <input
+                                        type="text"
+                                        id="modal_hse_number"
+                                        name="hse_number"
+                                        class="form-control"
+                                        placeholder="e.g., A123"
+                                        required />
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <label class="form-label" for="modal_unit_type">Unit Type</label>
+                                    <select class="form-select" id="modal_unit_type" name="unit_type" required>
+                                        <option value="">Select Unit Type</option>
+                                        <option value="2BR">2 Bedroom</option>
+                                        <option value="3BR">3 Bedroom</option>
+                                    </select>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <label class="form-label" for="modal_status">Status</label>
+                                    <select class="form-select" id="modal_status" name="status" required>
+                                        <option value="">Select Status</option>
+                                        <option value="vacant">Vacant</option>
+                                        <option value="owned">Owned</option>
+                                        <option value="developer">Developer</option>
+                                    </select>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <label class="form-label" for="modal_handover">Handover Date</label>
+                                    <input
+                                        type="date"
+                                        id="modal_handover"
+                                        name="handover"
+                                        class="form-control" />
+                                </div>
+                                <div class="col-12 text-center">
+                                    <button type="submit" class="btn btn-primary me-sm-3 me-1">Update House</button>
+                                    <button type="reset" class="btn btn-label-secondary" data-bs-dismiss="modal" aria-label="Close">
+                                        Cancel
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Delete House Modal -->
+            <div class="modal fade" id="deleteHouseModal" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <form method="post" action="" id="deleteHouseForm">
+                            {% csrf_token %}
+                            <div class="modal-header">
+                                <h5 class="modal-title">Delete House</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="mb-4">
+                                    <h6>Are you sure you want to delete House <span id="deleteHouseNumber"></span>?</h6>
+                                    <p class="text-muted">This action cannot be undone.</p>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                <button type="submit" class="btn btn-danger">Delete</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
 
             <!-- Footer -->
             <footer class="content-footer footer bg-footer-theme">
@@ -588,6 +690,25 @@
     <script src="{% static 'house/vendor/js/menu.js' %}"></script>
 
     <!-- endbuild -->
+    <script>
+    function openEditModal(id, hseNumber, unitType, status, handover) {
+        // Set form action URL
+        document.getElementById('editHouseForm').action = `/house/${id}/update/`;
+        
+        // Set form values
+        document.getElementById('modal_hse_number').value = hseNumber;
+        document.getElementById('modal_unit_type').value = unitType;
+        document.getElementById('modal_status').value = status;
+        document.getElementById('modal_handover').value = handover;
+    }
+    </script>
+    <!-- hse delete function -->
+    <script>
+    function openDeleteModal(houseId, houseNumber) {
+        document.getElementById('deleteHouseForm').action = `/house/${houseId}/delete/`;
+        document.getElementById('deleteHouseNumber').textContent = houseNumber;
+    }
+    </script>
 
     <!-- Vendors JS -->
     <script src="{% static 'house/vendor/libs/moment/moment.js' %}"></script>
