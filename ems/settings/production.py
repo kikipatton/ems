@@ -5,8 +5,8 @@ import os
 DEBUG = False
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')  # Set this in your production environment
 
-ALLOWED_HOSTS = ['ems.quantumconnect.africa', '102.217.6.39', 'localhost']
-CSRF_TRUSTED_ORIGINS = ['https://ems.quantumconnect.africa']
+ALLOWED_HOSTS = ['ems.neesites.co.ke', '102.217.6.39', 'localhost']
+CSRF_TRUSTED_ORIGINS = ['https://ems.neesites.co.ke']
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 

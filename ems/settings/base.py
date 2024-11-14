@@ -78,5 +78,5 @@ USE_L10N = True
 USE_TZ = True
 
 # URLs
-LOGIN_REDIRECT_URL = 'dashboard'
+LOGIN_REDIRECT_URL = 'house-list'
 LOGOUT_REDIRECT_URL = 'login'
