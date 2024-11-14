@@ -6,11 +6,31 @@ from .models import House, Owner
 from .forms import HouseForm, OwnerForm
 
 # House Views
-class HouseListView(LoginRequiredMixin, ListView):
+class HouseListView(ListView):
     model = House
     template_name = 'houses/house_list.html'
     context_object_name = 'houses'
     ordering = ['hse_number']
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        
+        # Get all houses
+        houses = House.objects.all()
+        
+        # Total houses
+        context['housess_count'] = houses.count()
+        
+        # Houses with owners
+        context['howned_count'] = houses.filter(status='owned').count()
+        
+        # Developer houses
+        context['downedd_count'] = houses.filter(status='developer').count()
+        
+        # Vacant houses
+        context['vhouse_count'] = houses.filter(status='vacant').count()
+
+        return context
 
 class HouseCreateView(LoginRequiredMixin, CreateView):
     model = House

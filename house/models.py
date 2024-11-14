@@ -3,6 +3,12 @@ from django.contrib.auth.models import User
 from django.utils import timezone
 
 class House(models.Model):
+    STATUS_CHOICES = [
+        ('vacant', 'Vacant'),
+        ('owned', 'Owned'),
+        ('developer', 'Developer Owned'),
+    ]
+        
     UNIT_CHOICES = [
         ('2BR', '2Bedroom'),
         ('3BR', '3Bedroom'),
@@ -15,6 +21,7 @@ class House(models.Model):
         verbose_name='Unit Type'
     )
     handover = models.DateTimeField(null=True, blank=True)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='vacant')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
