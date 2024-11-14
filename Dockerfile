@@ -18,11 +18,14 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-# Collect static files and set permissions
-RUN python manage.py collectstatic --noinput && \
-    chown -R root:root /app/static /app/staticfiles && \
-    chmod -R 755 /app/static /app/staticfiles
+# Create staticfiles directory
+RUN mkdir -p /app/staticfiles
+
+# Set permissions without collectstatic
+RUN chmod -R 755 /app/static /app/staticfiles
 
 EXPOSE 8000
 
-CMD gunicorn ems.wsgi:application --bind 0.0.0.0:8000 --workers 3
+# Move collectstatic to entrypoint script
+CMD python manage.py collectstatic --noinput && \
+    gunicorn ems.wsgi:application --bind 0.0.0.0:8000 --workers 3

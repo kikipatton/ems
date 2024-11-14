@@ -42,7 +42,7 @@ WHITENOISE_MIMETYPES = {
 }
 
 # Use this simpler storage backend
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATICFILES_STORAGE = 'whitenoise.storage.StaticFilesStorage'
 
 # Add these whitenoise settings
 WHITENOISE_USE_FINDERS = True
