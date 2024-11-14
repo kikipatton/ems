@@ -24,11 +24,5 @@ RUN apt-get update && apt-get install -y wget
 #install curl
 RUN apt-get update && apt-get install -y curl
 
-# Copy project
-COPY . .
-RUN chmod -R 755 /app/static
-# Create staticfiles directory and set permissions
-RUN mkdir -p /app/staticfiles && chmod 755 /app/staticfiles
-
 # Start Gunicorn
 CMD gunicorn box.wsgi:application --bind 0.0.0.0:8000
