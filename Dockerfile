@@ -3,7 +3,7 @@ FROM python:3.9-slim
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
-ENV DJANGO_SETTINGS_MODULE=box.settings.production
+ENV DJANGO_SETTINGS_MODULE=ems.settings.production
 
 # Install build dsps
 RUN apt-get update && apt-get install -y \
@@ -28,4 +28,4 @@ RUN apt-get update && apt-get install -y curl
 COPY . .
 
 # Start Gunicorn
-CMD gunicorn box.wsgi:application --bind 0.0.0.0:8000
+CMD gunicorn ems.wsgi:application --bind 0.0.0.0:8000
