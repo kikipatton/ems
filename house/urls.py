@@ -12,5 +12,5 @@ urlpatterns = [
     path('owners/', views.OwnerListView.as_view(), name='owner-list'),
     path('owner/new/',views.OwnerCreateView.as_view(), name='owner-create'),
     path('owner/<int:pk>/update/', views.OwnerUpdateView.as_view(), name='owner-update'),
-    path('owner/<int:pk>/delete/', views.OwnerDeleteView.as_view(), name='owner-delete'),
+    path('owners/<int:pk>/delete/', views.OwnerDeleteView.as_view(), name='owner-delete'),
 ]

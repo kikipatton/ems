@@ -89,27 +89,56 @@ class HouseDeleteView(LoginRequiredMixin, DeleteView):
     success_url = reverse_lazy('house-list')
 
 # Owner Views
+
 class OwnerListView(LoginRequiredMixin, ListView):
     model = Owner
     template_name = 'owners/owner_list.html'
     context_object_name = 'owners'
     ordering = ['-created_at']
+    paginate_by = 10
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['houses'] = House.objects.filter(
+            Q(status='vacant') | Q(owner_set__isnull=True)
+        ).order_by('hse_number')
+        context['form'] = OwnerForm()
+        context['total_owners'] = Owner.objects.count()
+        return context
 
 class OwnerCreateView(LoginRequiredMixin, CreateView):
     model = Owner
     form_class = OwnerForm
-    template_name = 'owners/owner_form.html'
     success_url = reverse_lazy('owner-list')
 
     def form_valid(self, form):
         form.instance.created_by = self.request.user
-        return super().form_valid(form)
+        response = super().form_valid(form)
+        
+        # Handle house assignment after owner is created
+        house_id = self.request.POST.get('house')
+        if house_id:
+            house = House.objects.get(id=house_id)
+            self.object.house.add(house)
+            house.status = 'owned'
+            house.save()
+            
+        messages.success(self.request, 'Owner created successfully.')
+        return response
 
 class OwnerUpdateView(LoginRequiredMixin, UpdateView):
     model = Owner
     form_class = OwnerForm
-    template_name = 'owners/owner_form.html'
     success_url = reverse_lazy('owner-list')
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        messages.success(self.request, 'Owner updated successfully.')
+        return response
+
+    def form_invalid(self, form):
+        messages.error(self.request, 'Error updating owner. Please check the form.')
+        return super().form_invalid(form)
 
 class OwnerDeleteView(LoginRequiredMixin, DeleteView):
     model = Owner

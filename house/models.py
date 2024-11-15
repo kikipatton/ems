@@ -43,11 +43,10 @@ class Owner(models.Model):
     kra_pin = models.CharField('KRA PIN', unique=True, max_length=20)
     address = models.TextField()
     nationality = models.CharField(max_length=20)
-    house = models.ForeignKey(
-        House, 
-        on_delete=models.SET_NULL, 
-        null=True,
-        related_name='owner_set'
+    house = models.ManyToManyField(
+        House,
+        related_name='owner_set',
+        blank=True
     )
     created_by = models.ForeignKey(
         User, 
@@ -61,9 +60,13 @@ class Owner(models.Model):
         return f"{self.first_name} {self.last_name}"
     
     def __str__(self):
-        return f"{self.get_full_name()} - House: {self.house.hse_number if self.house else 'No House'}"
+        house = self.house.first()  # Get first house if exists
+        return f"{self.get_full_name()} - House: {house.hse_number if house else 'No House'}"
+    
+    
 
     class Meta:
         ordering = ['-created_at']
         verbose_name = 'Owner'
         verbose_name_plural = 'Owners'
+        
