@@ -129,6 +129,7 @@ class OwnerCreateView(LoginRequiredMixin, CreateView):
 class OwnerUpdateView(LoginRequiredMixin, UpdateView):
     model = Owner
     form_class = OwnerForm
+    template_name = 'house/owner_account.html'
     success_url = reverse_lazy('owner-list')
 
     def form_valid(self, form):
