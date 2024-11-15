@@ -6,7 +6,7 @@ from django.db.models import Q
 from .models import House, Owner
 from .forms import HouseForm, OwnerForm
 
-class HouseListView(ListView):
+class HouseListView(LoginRequiredMixin, ListView):
     model = House
     template_name = 'house/house_list.html'
     context_object_name = 'houses'
@@ -63,7 +63,7 @@ class HouseListView(ListView):
 
         return context
 
-class HouseCreateView( CreateView):
+class HouseCreateView(LoginRequiredMixin, CreateView):
     model = House
     form_class = HouseForm
     template_name = 'house/house_form.html'
