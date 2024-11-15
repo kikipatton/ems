@@ -403,22 +403,7 @@
                                         </button>
                                         <ul class="dropdown-menu">
                                             <li>
-                                                <a class="dropdown-item" 
-                                                  href="javascript:void(0);" 
-                                                  onclick="openEditModal(
-                                                      '{{ owner.pk }}', 
-                                                      '{{ owner.first_name|escapejs }}', 
-                                                      '{{ owner.middle_name|escapejs }}', 
-                                                      '{{ owner.last_name|escapejs }}', 
-                                                      '{{ owner.email|escapejs }}', 
-                                                      '{{ owner.phone_number|escapejs }}', 
-                                                      '{{ owner.kra_pin|escapejs }}', 
-                                                      '{{ owner.address|escapejs }}', 
-                                                      '{{ owner.nationality|escapejs }}', 
-                                                      '{{ owner.house.id|default:"" }}'
-                                                  )"
-                                                  data-bs-toggle="offcanvas" 
-                                                  data-bs-target="#offcanvasAddUser">
+                                                <a class="dropdown-item" href="javascript:void(0);">
                                                     <i class="ti ti-edit me-1"></i> Edit
                                                 </a>
                                             </li>
@@ -525,7 +510,7 @@
                               <option value="ISRAELITE">Israel</option>
                               <option value="ITALIAN">Italy</option>
                               <option value="JAPANESE">Japan</option>
-                              <option value="KENYAN">Kenyan</option>
+                              <option value="KENYAN">Kenya</option>
                               <option value="MEXICAN">Mexico</option>
                               <option value="PHILLIPINES">Philippines</option>
                               <option value="RUSSIAN">Russian Federation</option>
@@ -540,7 +525,7 @@
                         </div>
                         <div class="mb-3">
                             <label class="form-label" for="house">House</label>
-                            <select class="form-select" id="house" name="house">
+                            <select class="select2 form-select" id="house" name="house">
                                 <option value="">Select House</option>
                                 {% for house in houses %}
                                     <option value="{{ house.id }}">{{ house.hse_number }} - {{ house.get_unit_type_display }}</option>
