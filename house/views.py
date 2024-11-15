@@ -1,35 +1,65 @@
-# views.py
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.contrib import messages
+from django.db.models import Q
 from .models import House, Owner
 from .forms import HouseForm, OwnerForm
 
-# House Views
 class HouseListView(ListView):
     model = House
     template_name = 'house/house_list.html'
     context_object_name = 'houses'
     ordering = ['hse_number']
+    paginate_by = 100
+    
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        search_query = self.request.GET.get('search')
+        
+        if search_query:
+            queryset = queryset.filter(
+                Q(hse_number__icontains=search_query) |
+                Q(owner_set__first_name__icontains=search_query) |
+                Q(owner_set__last_name__icontains=search_query) |
+                Q(owner_set__email__icontains=search_query) |
+                Q(owner_set__phone_number__icontains=search_query) |
+                Q(owner_set__kra_pin__icontains=search_query) |
+                Q(unit_type__icontains=search_query) |
+                Q(status__icontains=search_query)
+            ).distinct()
+            
+        return queryset
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         
-        # Get all houses
-        houses = House.objects.all()
+        # Get filtered houses based on search
+        houses = self.get_queryset()
         
-        # Total houses
+        # Total houses in current filter
         context['houses_count'] = houses.count()
         
-        # Houses with owners
+        # Houses with owners in current filter
         context['howned_count'] = houses.filter(status='owned').count()
         
-        # Developer houses
+        # Developer houses in current filter
         context['downed_count'] = houses.filter(status='developer').count()
         
-        # Vacant houses
+        # Vacant houses in current filter
         context['vhouse_count'] = houses.filter(status='vacant').count()
+        
+        # Add search query to context for form
+        context['search_query'] = self.request.GET.get('search', '')
+        
+        # Preserve search query in pagination links
+        search_query = self.request.GET.get('search', '')
+        context['search_query'] = search_query
+        
+        if search_query:
+            context['extra_url_params'] = f'&search={search_query}'
+        else:
+            context['extra_url_params'] = ''
 
         return context
 
