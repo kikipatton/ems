@@ -28,8 +28,8 @@
 
     <!-- Core CSS -->
 
-    <link rel="stylesheet" href="{% static 'house/vendor/css/rtl/core.css" class="template-customizer-core-css' %}" />
-    <link rel="stylesheet" href="{% static 'house/vendor/css/rtl/theme-default.css" class="template-customizer-theme-css' %}" />
+    <link rel="stylesheet" href="{% static 'house/vendor/css/rtl/core.css' %}" class="template-customizer-core-css" />
+    <link rel="stylesheet" href="{% static 'house/vendor/css/rtl/theme-default.css' %}" class="template-customizer-theme-css" />
 
     <link rel="stylesheet" href="{% static 'house/css/demo.css' %}" />
 
@@ -324,12 +324,6 @@
                     <div class="card-body pt-12">
                       <div class="customer-avatar-section">
                         <div class="d-flex align-items-center flex-column">
-                          <img
-                            class="img-fluid rounded mb-4"
-                            src="{% static 'house/img/avatars/1.png' %}"
-                            height="120"
-                            width="120"
-                            alt="User avatar' %}" />
                           <div class="customer-info text-center mb-6">
                             <h5 class="mb-0">Lorine Hischke</h5>
                             <span>Customer ID #634759</span>
@@ -345,7 +339,7 @@
                           </div>
                           <div>
                             <h5 class="mb-0">184</h5>
-                            <span>Orders</span>
+                            <span>Units</span>
                           </div>
                         </div>
                         <div class="d-flex align-items-center gap-4">
@@ -356,7 +350,7 @@
                           </div>
                           <div>
                             <h5 class="mb-0">$12,378</h5>
-                            <span>Spent</span>
+                            <span>Cubic Meter</span>
                           </div>
                         </div>
                       </div>
@@ -437,7 +431,7 @@
                         <a class="nav-link active" href="javascript:void(0);"
                           ><i class="ti ti-user ti-sm me-1_5"></i>Overview</a
                         >
-                      </li>
+       <!---            </li>
                       <li class="nav-item">
                         <a class="nav-link" href="app-ecommerce-customer-details-security.html"
                           ><i class="ti ti-lock ti-sm me-1_5"></i>Security</a
@@ -452,7 +446,7 @@
                         <a class="nav-link" href="app-ecommerce-customer-details-notifications.html"
                           ><i class="ti ti-bell ti-sm me-1_5"></i>Notifications</a
                         >
-                      </li>
+                      </li> -->
                     </ul>
                   </div>
                   <!--/ Customer Pills -->
@@ -470,12 +464,12 @@
                             </div>
                           </div>
                           <div class="card-info">
-                            <h5 class="card-title mb-2">Account Balance</h5>
+                            <h5 class="card-title mb-2">Cumulative Bill</h5>
                             <div class="d-flex align-items-baseline gap-1">
                               <h5 class="text-primary mb-0">$2345</h5>
-                              <p class="mb-0">Credit Left</p>
+                              <p class="mb-0"></p>
                             </div>
-                            <p class="mb-0 text-truncate">Account balance for next purchase</p>
+                            <p class="mb-0 text-truncate">Water bill to be cleared</p>
                           </div>
                         </div>
                       </div>
@@ -491,7 +485,7 @@
                             </div>
                           </div>
                           <div class="card-info">
-                            <h5 class="card-title mb-2">Loyalty Program</h5>
+                            <h5 class="card-title mb-2">Meter Number</h5>
                             <span class="badge bg-label-success mb-2">Platinum member</span>
                             <p class="mb-0">3000 points to next tier</p>
                           </div>
@@ -509,12 +503,12 @@
                             </div>
                           </div>
                           <div class="card-info">
-                            <h5 class="card-title mb-2">Wishlist</h5>
+                            <h5 class="card-title mb-2">Water Usage</h5>
                             <div class="d-flex align-items-baseline gap-1">
+                              <p class="mb-0">This month's units</p>
                               <h5 class="text-warning mb-0">15</h5>
-                              <p class="mb-0">Items in wishlist</p>
                             </div>
-                            <p class="mb-0 text-truncate">Receive notification when items go on sale</p>
+                            <p class="mb-0 text-truncate"></p>
                           </div>
                         </div>
                       </div>
@@ -530,13 +524,13 @@
                             </div>
                           </div>
                           <div class="card-info">
-                            <h5 class="card-title mb-2">Coupons</h5>
+                            <h5 class="card-title mb-2">Water Bill</h5>
                             <div class="d-flex align-items-baseline gap-1">
+                              <p class="mb-0">This month's bill</p>
                               <h5 class="text-info mb-0">21</h5>
-                              <p class="mb-0">Coupons you win</p>
                             </div>
 
-                            <p class="mb-0 text-truncate">Use coupon on next purchase</p>
+                            <p class="mb-0 text-truncate"></p>
                           </div>
                         </div>
                       </div>
@@ -552,7 +546,7 @@
                         <thead>
                           <tr>
                             <th></th>
-                            <th>Order</th>
+                            <th>Invoice</th>
                             <th>Date</th>
                             <th>Status</th>
                             <th>Spent</th>
