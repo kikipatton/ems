@@ -513,23 +513,55 @@
               </div>
                 </div>
                 <!-- Pagination -->
-                  <div class="pagination col-md-4">
-                      <span class="step-links">
-                          {% if page_obj.has_previous %}
-                              <a href="?page=1{{ extra_url_params }}">&laquo; first</a>
-                              <a href="?page={{ page_obj.previous_page_number }}{{ extra_url_params }}">previous</a>
-                          {% endif %}
+                <div class="col-md-4">
+                  <nav aria-label="Page navigation">
+                    <ul class="pagination pagination-rounded pagination-outline-primary">
+                      {% if page_obj.has_previous %}
+                        <li class="page-item first">
+                          <a class="page-link" href="?page=1{{ extra_url_params }}"><i class="ti ti-chevrons-left ti-sm"></i></a>
+                        </li>
+                        <li class="page-item prev">
+                          <a class="page-link" href="?page={{ page_obj.previous_page_number }}{{ extra_url_params }}"><i class="ti ti-chevron-left ti-sm"></i></a>
+                        </li>
+                      {% else %}
+                        <li class="page-item first disabled">
+                          <a class="page-link" href="#"><i class="ti ti-chevrons-left ti-sm"></i></a>
+                        </li>
+                        <li class="page-item prev disabled">
+                          <a class="page-link" href="#"><i class="ti ti-chevron-left ti-sm"></i></a>
+                        </li>
+                      {% endif %}
 
-                          <span class="current">
-                              Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
-                          </span>
+                      {% for num in page_obj.paginator.page_range %}
+                        {% if page_obj.number == num %}
+                          <li class="page-item active">
+                            <a class="page-link" href="?page={{ num }}{{ extra_url_params }}">{{ num }}</a>
+                          </li>
+                        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                          <li class="page-item">
+                            <a class="page-link" href="?page={{ num }}{{ extra_url_params }}">{{ num }}</a>
+                          </li>
+                        {% endif %}
+                      {% endfor %}
 
-                          {% if page_obj.has_next %}
-                              <a href="?page={{ page_obj.next_page_number }}{{ extra_url_params }}">next</a>
-                              <a href="?page={{ page_obj.paginator.num_pages }}{{ extra_url_params }}">last &raquo;</a>
-                          {% endif %}
-                      </span>
-                  </div>
+                      {% if page_obj.has_next %}
+                        <li class="page-item next">
+                          <a class="page-link" href="?page={{ page_obj.next_page_number }}{{ extra_url_params }}"><i class="ti ti-chevron-right ti-sm"></i></a>
+                        </li>
+                        <li class="page-item last">
+                          <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{{ extra_url_params }}"><i class="ti ti-chevrons-right ti-sm"></i></a>
+                        </li>
+                      {% else %}
+                        <li class="page-item next disabled">
+                          <a class="page-link" href="#"><i class="ti ti-chevron-right ti-sm"></i></a>
+                        </li>
+                        <li class="page-item last disabled">
+                          <a class="page-link" href="#"><i class="ti ti-chevrons-right ti-sm"></i></a>
+                        </li>
+                      {% endif %}
+                    </ul>
+                  </nav>
+                </div>
               </div>
 
             <!--/ Content -->
