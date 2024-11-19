@@ -305,12 +305,22 @@
             <!-- / Menu -->
 
             <!-- Content -->
+             {% if messages %}
+              <div class="messages">
+                  {% for message in messages %}
+                  <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                      {{ message }}
+                      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                  </div>
+                  {% endfor %}
+              </div>
+              {% endif %}
 
             <div class="container-xxl flex-grow-1 container-p-y">
               <div
                 class="d-flex flex-column flex-sm-row align-items-center justify-content-sm-between mb-6 text-center text-sm-start gap-2">
                 <div class="mb-2 mb-sm-0">
-                  <h4 class="mb-1">HOUSE: A101</h4>
+                  <h4 class="mb-1">HOUSE:{% if owner.house.exists %} {% for house in owner.house.all %} {{ house.hse_number }} {% endfor %} {% endif %}</h4>
                   <p class="mb-0">Nov 17, 2024, 5:48 (ET)</p>
                 </div>
                 <button type="button" class="btn btn-label-danger delete-customer">Delete Owner</button>
@@ -325,8 +335,8 @@
                       <div class="customer-avatar-section">
                         <div class="d-flex align-items-center flex-column">
                           <div class="customer-info text-center mb-6">
-                            <h5 class="mb-0">Lorine Hischke</h5>
-                            <span>Customer ID #634759</span>
+                            <h5 class="mb-0">{{owner.get_full_name}}</h5>
+                            <span></span>
                           </div>
                         </div>
                       </div>
@@ -334,7 +344,7 @@
                         <div class="d-flex align-items-center gap-4 me-5">
                           <div class="avatar">
                             <div class="avatar-initial rounded bg-label-primary">
-                              <i class="ti ti-shopping-cart ti-lg"></i>
+                              <i class="ti ti-droplet ti-lg"></i>
                             </div>
                           </div>
                           <div>
@@ -345,11 +355,11 @@
                         <div class="d-flex align-items-center gap-4">
                           <div class="avatar">
                             <div class="avatar-initial rounded bg-label-primary">
-                              <i class="ti ti-currency-dollar ti-lg"></i>
+                              <i class="ti ti-wash-temperature-3 ti-lg"></i>
                             </div>
                           </div>
                           <div>
-                            <h5 class="mb-0">$12,378</h5>
+                            <h5 class="mb-0">454</h5>
                             <span>Cubic Meter</span>
                           </div>
                         </div>
@@ -359,32 +369,36 @@
                         <h5 class="pb-4 border-bottom text-capitalize mt-6 mb-4">Details</h5>
                         <ul class="list-unstyled mb-6">
                           <li class="mb-2">
-                            <span class="h6 me-1">Username:</span>
-                            <span>lorine.hischke</span>
+                            <span class="h6 me-1">Full name:</span>
+                            <span>{{ owner.get_full_name }}</span>
                           </li>
                           <li class="mb-2">
                             <span class="h6 me-1">Email:</span>
-                            <span>vafgot@vultukir.org</span>
+                            <span>{{ owner.email }}</span>
                           </li>
                           <li class="mb-2">
-                            <span class="h6 me-1">Status:</span>
-                            <span class="badge bg-label-success">Active</span>
+                            <span class="h6 me-1">KRA PIN:</span>
+                            <span>{{ owner.kra_pin }}</span>
                           </li>
                           <li class="mb-2">
                             <span class="h6 me-1">Contact:</span>
-                            <span>(123) 456-7890</span>
+                            <span>{{ owner.phone_number }}</span>
                           </li>
 
                           <li class="mb-2">
-                            <span class="h6 me-1">Country:</span>
-                            <span>USA</span>
+                            <span class="h6 me-1">Nationality:</span>
+                            <span>{{ owner.nationality }}</span>
+                          </li>
+                          <li class="mb-2">
+                            <span class="h6 me-1">Address:</span>
+                            <span>{{ owner.address }}</span>
                           </li>
                         </ul>
                         <div class="d-flex justify-content-center">
                           <a
                             href="javascript:;"
                             class="btn btn-primary w-100"
-                            data-bs-target="#editUser"
+                            data-bs-target="#editOwner"
                             data-bs-toggle="modal"
                             >Edit Details</a
                           >
@@ -400,9 +414,9 @@
                       <div class="row justify-content-between mb-4">
                         <div
                           class="col-md-12 col-lg-7 col-xl-12 col-xxl-7 text-center text-lg-start text-xl-center text-xxl-start order-1 order-lg-0 order-xl-1 order-xxl-0">
-                          <h5 class="card-title text-white text-nowrap mb-4">Upgrade to premium</h5>
+                          <h5 class="card-title text-white text-nowrap mb-4">Gatepass</h5>
                           <p class="card-text text-white">
-                            Upgrade customer to premium membership to access pro features.
+                            You will be required to provide a code to leave the premises, please have it with you
                           </p>
                         </div>
                         <span class="col-md-12 col-lg-5 col-xl-12 col-xxl-5 text-center mx-auto mx-md-0 mb-2"
@@ -413,7 +427,7 @@
                         class="btn btn-white text-primary w-100 fw-medium shadow-xs"
                         data-bs-target="#upgradePlanModal"
                         data-bs-toggle="modal">
-                        Upgrade to premium
+                        Approve Gatepass
                       </button>
                     </div>
                   </div>
@@ -562,150 +576,119 @@
               </div>
 
               <!-- Modal -->
-              <!-- Edit User Modal -->
-              <div class="modal fade" id="editUser" tabindex="-1" aria-hidden="true">
+              <!-- Edit Owner Modal -->
+              <div class="modal fade" id="editOwner" tabindex="-1" aria-hidden="true">
                 <div class="modal-dialog modal-lg modal-simple modal-edit-user">
                   <div class="modal-content">
                     <div class="modal-body">
                       <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                       <div class="text-center mb-6">
-                        <h4 class="mb-2">Edit User Information</h4>
-                        <p>Updating user details will receive a privacy audit.</p>
+                        <h4 class="mb-2">Edit Owner Information</h4>
+                        <p>Updating owner details will receive a privacy audit.</p>
                       </div>
-                      <form id="editUserForm" class="row g-6" onsubmit="return false">
+                      <form id="editOwnerForm" class="row g-6" method="post" action="{% url 'owner-update' owner.id %}">
+                        {% csrf_token %}
                         <div class="col-12 col-md-6">
                           <label class="form-label" for="modalEditUserFirstName">First Name</label>
                           <input
                             type="text"
                             id="modalEditUserFirstName"
-                            name="modalEditUserFirstName"
+                            name="first_name"
                             class="form-control"
                             placeholder="John"
-                            value="John" />
+                            value="{{ owner.first_name }}" />
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label class="form-label" for="modalEditUserMiddleName">Middle Name</label>
+                            <input
+                                type="text"
+                                id="modalEditUserMiddleName"
+                                name="middle_name"
+                                class="form-control"
+                                placeholder="Middle Name"
+                                value="{{ owner.middle_name }}" />
                         </div>
                         <div class="col-12 col-md-6">
                           <label class="form-label" for="modalEditUserLastName">Last Name</label>
                           <input
                             type="text"
                             id="modalEditUserLastName"
-                            name="modalEditUserLastName"
+                            name="last_name"
                             class="form-control"
                             placeholder="Doe"
-                            value="Doe" />
-                        </div>
-                        <div class="col-12">
-                          <label class="form-label" for="modalEditUserName">Username</label>
-                          <input
-                            type="text"
-                            id="modalEditUserName"
-                            name="modalEditUserName"
-                            class="form-control"
-                            placeholder="johndoe007"
-                            value="johndoe007" />
+                            value="{{ owner.last_name }}" />
                         </div>
                         <div class="col-12 col-md-6">
                           <label class="form-label" for="modalEditUserEmail">Email</label>
                           <input
-                            type="text"
+                            type="email"
                             id="modalEditUserEmail"
-                            name="modalEditUserEmail"
+                            name="email"
                             class="form-control"
                             placeholder="example@domain.com"
-                            value="example@domain.com" />
+                            value="{{ owner.email }}" />
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label" for="modalEditHouses">Houses</label>
+                            <select
+                                id="modalEditHouses"
+                                name="house"
+                                class="select2 form-select"
+                                multiple>
+                                {% for house in houses %}
+                                    <option value="{{ house.id }}" 
+                                        {% if house in owner.house.all %}selected{% endif %}>
+                                        {{ house.hse_number }}
+                                    </option>
+                                {% endfor %}
+                            </select>
                         </div>
                         <div class="col-12 col-md-6">
-                          <label class="form-label" for="modalEditUserStatus">Status</label>
-                          <select
-                            id="modalEditUserStatus"
-                            name="modalEditUserStatus"
-                            class="select2 form-select"
-                            aria-label="Default select example">
-                            <option selected>Status</option>
-                            <option value="1">Active</option>
-                            <option value="2">Inactive</option>
-                            <option value="3">Suspended</option>
-                          </select>
-                        </div>
-                        <div class="col-12 col-md-6">
-                          <label class="form-label" for="modalEditTaxID">Tax ID</label>
+                          <label class="form-label" for="modalEditTaxID">KRA PIN</label>
                           <input
                             type="text"
-                            id="modalEditTaxID"
-                            name="modalEditTaxID"
-                            class="form-control modal-edit-tax-id"
-                            placeholder="123 456 7890"
-                            value="123 456 7890" />
+                            name="kra_pin"
+                            class="form-control"
+                            placeholder="A012345678B"
+                            value="{{ owner.kra_pin }}" />
                         </div>
                         <div class="col-12 col-md-6">
                           <label class="form-label" for="modalEditUserPhone">Phone Number</label>
                           <div class="input-group">
-                            <span class="input-group-text">US (+1)</span>
+                            <span class="input-group-text"></span>
                             <input
                               type="text"
                               id="modalEditUserPhone"
-                              name="modalEditUserPhone"
+                              name="phone_number"
                               class="form-control phone-number-mask"
-                              placeholder="202 555 0111"
-                              value="202 555 0111" />
+                              placeholder="0712 345 678"
+                              value="{{ owner.phone_number }}" />
                           </div>
                         </div>
                         <div class="col-12 col-md-6">
-                          <label class="form-label" for="modalEditUserLanguage">Language</label>
-                          <select
-                            id="modalEditUserLanguage"
-                            name="modalEditUserLanguage"
-                            class="select2 form-select"
-                            multiple>
-                            <option value="">Select</option>
-                            <option value="english" selected>English</option>
-                            <option value="spanish">Spanish</option>
-                            <option value="french">French</option>
-                            <option value="german">German</option>
-                            <option value="dutch">Dutch</option>
-                            <option value="hebrew">Hebrew</option>
-                            <option value="sanskrit">Sanskrit</option>
-                            <option value="hindi">Hindi</option>
-                          </select>
-                        </div>
-                        <div class="col-12 col-md-6">
-                          <label class="form-label" for="modalEditUserCountry">Country</label>
+                          <label class="form-label" for="modalEditUserCountry">Nationality</label>
                           <select
                             id="modalEditUserCountry"
-                            name="modalEditUserCountry"
+                            name="nationality"
                             class="select2 form-select"
                             data-allow-clear="true">
                             <option value="">Select</option>
-                            <option value="Australia">Australia</option>
-                            <option value="Bangladesh">Bangladesh</option>
-                            <option value="Belarus">Belarus</option>
-                            <option value="Brazil">Brazil</option>
-                            <option value="Canada">Canada</option>
-                            <option value="China">China</option>
-                            <option value="France">France</option>
-                            <option value="Germany">Germany</option>
-                            <option value="India" selected>India</option>
-                            <option value="Indonesia">Indonesia</option>
-                            <option value="Israel">Israel</option>
-                            <option value="Italy">Italy</option>
-                            <option value="Japan">Japan</option>
-                            <option value="Korea">Korea, Republic of</option>
-                            <option value="Mexico">Mexico</option>
-                            <option value="Philippines">Philippines</option>
-                            <option value="Russia">Russian Federation</option>
-                            <option value="South Africa">South Africa</option>
-                            <option value="Thailand">Thailand</option>
-                            <option value="Turkey">Turkey</option>
-                            <option value="Ukraine">Ukraine</option>
-                            <option value="United Arab Emirates">United Arab Emirates</option>
-                            <option value="United Kingdom">United Kingdom</option>
-                            <option value="United States">United States</option>
+                            <option value="KENYAN" {% if owner.nationality == 'KENYAN' %}selected{% endif %}>Kenyan</option>
+                            <option value="Ugandan" {% if owner.nationality == 'UGANDAN' %}selected{% endif %}>Ugandan</option>
+                            <option value="Tanzanian" {% if owner.nationality == 'Tanzanian' %}selected{% endif %}>Tanzanian</option>
+                            <option value="Ethiopian" {% if owner.nationality == 'Ethiopian' %}selected{% endif %}>Ethiopian</option>
+                            <option value="Rwandan" {% if owner.nationality == 'Rwandan' %}selected{% endif %}>Rwandan</option>
+                            <option value="Other" {% if owner.nationality == 'Other' %}selected{% endif %}>Other</option>
                           </select>
                         </div>
                         <div class="col-12">
-                          <div class="form-check form-switch">
-                            <input type="checkbox" class="form-check-input" id="editBillingAddress" />
-                            <label for="editBillingAddress" class="switch-label">Use as a billing address?</label>
-                          </div>
+                          <label class="form-label" for="modalEditAddress">Address</label>
+                          <textarea
+                            id="modalEditAddress"
+                            name="address"
+                            class="form-control"
+                            rows="3"
+                            placeholder="Enter address">{{ owner.address }}</textarea>
                         </div>
                         <div class="col-12 text-center">
                           <button type="submit" class="btn btn-primary me-3">Submit</button>
@@ -722,7 +705,7 @@
                   </div>
                 </div>
               </div>
-              <!--/ Edit User Modal -->
+              <!--/ Edit Owner Modal -->
 
               <!-- Add New Credit Card Modal -->
               <div class="modal fade" id="upgradePlanModal" tabindex="-1" aria-hidden="true">

@@ -20,3 +20,7 @@ class OwnerForm(forms.ModelForm):
             'nationality',
             'house'  
         ]
+        widgets = {
+            'address': forms.Textarea(attrs={'rows': 3}),
+            'house': forms.SelectMultiple(attrs={'class': 'select2'}),
+        }

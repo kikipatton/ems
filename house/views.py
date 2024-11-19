@@ -132,14 +132,25 @@ class OwnerUpdateView(LoginRequiredMixin, UpdateView):
     template_name = 'house/owner_account.html'
     success_url = reverse_lazy('owner-list')
 
+    def post(self, request, *args, **kwargs):
+        print("POST data:", request.POST)  # Debug print
+        return super().post(request, *args, **kwargs)
+
     def form_valid(self, form):
+        print("Form is valid:", form.cleaned_data)  # Debug print
         response = super().form_valid(form)
         messages.success(self.request, 'Owner updated successfully.')
         return response
 
     def form_invalid(self, form):
+        print("Form errors:", form.errors)  # Debug print
         messages.error(self.request, 'Error updating owner. Please check the form.')
         return super().form_invalid(form)
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['houses'] = House.objects.all()
+        return context
 
 class OwnerDeleteView(LoginRequiredMixin, DeleteView):
     model = Owner
