@@ -10,7 +10,6 @@ class Tenant(models.Model):
     email = models.EmailField(unique=True)
     phone_number = models.CharField(max_length=20, unique=True)
     id_cardnumber = models.PositiveIntegerField('ID NUMBER', unique=True)
-    address = models.TextField()
     nationality = models.CharField(max_length=20)
     house = models.OneToOneField(
         House,
@@ -39,7 +38,6 @@ class Tenant(models.Model):
 
 class Household(models.Model):    
     first_name = models.CharField(max_length=100)
-    middle_name = models.CharField(max_length=100, blank=True)
     last_name = models.CharField(max_length=100)
     email = models.EmailField(unique=True)
     phone_number = models.CharField(max_length=20, unique=True)
