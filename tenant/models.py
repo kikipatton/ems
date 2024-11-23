@@ -3,7 +3,14 @@ from django.contrib.auth.models import User
 from django.utils import timezone
 from house.models import House
 
-class Tenant(models.Model):    
+class Tenant(models.Model):
+    # Add status choices
+    STATUS_CHOICES = [
+        ('active', 'Active'),
+        ('notice', 'Notice Given'),
+        ('ended', 'Ended')
+    ]
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='active')   
     first_name = models.CharField(max_length=100)
     middle_name = models.CharField(max_length=100, blank=True)
     last_name = models.CharField(max_length=100)
@@ -27,6 +34,15 @@ class Tenant(models.Model):
 
     def get_full_name(self):
         return f"{self.first_name} {self.last_name}"
+    
+    def end_tenancy(self):
+        """Properly end a tenancy with all related updates"""
+        self.enddate_at = timezone.now()
+        self.status = 'ended'
+        if self.house:
+            self.house.status = 'vacant'
+            self.house.save()
+        self.save()
     
     def save(self, *args, **kwargs):
         # If tenant is marked as ended, mark all households as ended
@@ -54,8 +70,6 @@ class Household(models.Model):
         on_delete=models.SET_NULL, 
         null=True
     )
-    created_at = models.DateTimeField(default=timezone.now)
-    enddate_at = models.DateTimeField(null=True, blank=True)
 
     def get_full_name(self):
         return f"{self.first_name} {self.last_name}"

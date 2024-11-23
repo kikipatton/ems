@@ -43,6 +43,7 @@ urlpatterns = [
         template_name='auth/password_reset_complete.html'
     ), name='password_reset_complete'),
     path('', include('house.urls')),
+    path('', include('tenant.urls')),
 ]
 
 
