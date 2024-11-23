@@ -12,6 +12,6 @@ urlpatterns = [
     # Household URLs
     path('tenant/<int:tenant_pk>/household/add/', 
          views.HouseholdCreateView.as_view(), name='household-create'),
-    path('household/<int:pk>/update/', 
+    path('tenant/household/<int:pk>/update/', 
          views.HouseholdUpdateView.as_view(), name='household-update'),
 ]

@@ -426,7 +426,7 @@
                                         <select 
                                             name="{{ form.nationality.name }}"
                                             id="{{ form.nationality.id_for_label }}"
-                                            class="form-select select2"
+                                            class="form-select"
                                             data-allow-clear="true">
                                             <option value="">Select Nationality</option>
                                             <option value="KENYAN" {% if form.nationality.value == 'KENYAN' %}selected{% endif %}>Kenyan</option>
@@ -448,7 +448,7 @@
                                         <select 
                                             name="{{ form.house.name }}"
                                             id="{{ form.house.id_for_label }}"
-                                            class="form-select select2">
+                                            class="form-select">
                                             <option value="">Select House</option>
                                             {% for house in form.house.field.queryset %}
                                                 <option value="{{ house.id }}" {% if house.id == form.house.value|add:"0" %}selected{% endif %}>
@@ -632,6 +632,11 @@
                         <form id="householdForm" class="row g-6" method="POST" 
                             action="{% if household %}{% url 'household-update' household.pk %}{% else %}{% url 'household-create' tenant.pk %}{% endif %}">
                             {% csrf_token %}
+                            <div class="col-12 mb-3 form-errors" style="display: none;">
+                                <div class="alert alert-danger">
+                                    <ul class="mb-0"></ul>
+                                </div>
+                            </div>
                             <div class="col-12 col-md-6">
                                 <label class="form-label" for="modalFirstName">First Name</label>
                                 <input
@@ -690,7 +695,7 @@
                                 <select
                                     id="modalNationality"
                                     name="nationality"
-                                    class="select2 form-select"
+                                    class="form-select"
                                     data-allow-clear="true">
                                     <option value="">Select</option>
                                     <option value="KENYAN" {% if household.nationality == 'KENYAN' %}selected{% endif %}>Kenyan</option>
@@ -812,26 +817,25 @@
     <!-- endbuild -->
     <script>
     $(document).ready(function() {
-        // Handle edit household link clicks
+        // Handle edit button clicks
         $('a[href*="edit_household"]').on('click', function(e) {
             e.preventDefault();
-            const url = $(this).attr('href');
+            var url = $(this).attr('href');
+            var householdId = url.split('edit_household=')[1];
             
-            // Extract the household ID from the URL
-            const householdId = url.split('edit_household=')[1];
-            
-            // Fetch household details
+            // Fetch household data
             $.get(`/tenant/household/${householdId}/update/`, function(data) {
-                $('#modalFirstName').val(data.household.first_name);
-                $('#modalLastName').val(data.household.last_name);
-                $('#modalEmail').val(data.household.email);
-                $('#modalPhone').val(data.household.phone_number);
-                $('#modalIdNumber').val(data.household.id_cardnumber);
-                $('#modalNationality').val(data.household.nationality).trigger('change');
-                $('#modalAddress').val(data.household.address);
+                // Fill form fields
+                $('#modalFirstName').val(data.first_name);
+                $('#modalLastName').val(data.last_name);
+                $('#modalEmail').val(data.email);
+                $('#modalPhone').val(data.phone_number);
+                $('#modalIdNumber').val(data.id_cardnumber);
+                $('#modalNationality').val(data.nationality).trigger('change');
+                $('#modalAddress').val(data.address);
                 
-                // Update form action
-                $('#householdForm').attr('action', `/tenant/household/${householdId}/update/`);
+                // Update form action URL
+                $('#householdForm').attr('action', `/tenant/household/${data.id}/update/`);
                 
                 // Show modal
                 $('#householdModal').modal('show');
@@ -841,13 +845,6 @@
     </script>
     <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Initialize Select2 - make sure this runs after the offcanvas is shown
-        $('#offcanvasAddTenant').on('shown.bs.offcanvas', function () {
-            $('.select2').select2({
-                dropdownParent: $('#offcanvasAddTenant'),
-                width: '100%'
-            });
-        });
 
         // Status change handler
         document.getElementById('status').addEventListener('change', function() {
@@ -866,25 +863,7 @@
         });
     });
     </script>
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Initialize Select2 for the tenant form
-        $('.select2').each(function() {
-            $(this).select2({
-                dropdownParent: $(this).closest('.offcanvas'),
-                width: '100%'
-            });
-        });
-    });
-    </script>
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        $('.select2').select2({
-            dropdownParent: $('#householdModal'),
-            width: '100%'
-        });
-    });
-    </script>
+
     <script>
     function openEndTenancyModal(tenantId, tenantName) {
         document.getElementById('endTenancyForm').action = `/tenant/${tenantId}/`;
