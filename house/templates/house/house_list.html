@@ -482,7 +482,7 @@
                                         </li>
                                         {% with owner=house.owner_set.first %}
                                             {% if owner %}
-                                                <li><a class="dropdown-item" href="{% url 'owner-update' owner.pk %}">Edit Owner</a></li>
+                                                <li><a class="dropdown-item" href="{% url 'house-detail' house.pk %}">View House</a></li>
                                             {% else %}
                                                 <li><a class="dropdown-item" href="{% url 'owner-create' %}?house={{ house.pk }}">Add Owner</a></li>
                                             {% endif %}

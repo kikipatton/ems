@@ -5,6 +5,7 @@ urlpatterns = [
     # House URLs
     path('houses/', views.HouseListView.as_view(), name='house-list'),
     path('house/new/', views.HouseCreateView.as_view(), name='house-create'),
+    path('house/<int:pk>/', views.HouseDetailView.as_view(), name='house-detail'),
     path('house/<int:pk>/update/', views.HouseUpdateView.as_view(), name='house-update'),
     path('house/<int:pk>/delete/', views.HouseDeleteView.as_view(), name='house-delete'),
     

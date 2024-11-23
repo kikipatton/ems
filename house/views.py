@@ -1,6 +1,7 @@
-from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView, DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
+from django.shortcuts import redirect
 from django.contrib import messages
 from django.db.models import Q
 from .models import House, Owner
@@ -68,6 +69,61 @@ class HouseCreateView(LoginRequiredMixin, CreateView):
     form_class = HouseForm
     template_name = 'house/house_form.html'
     success_url = reverse_lazy('house-list')
+    
+class HouseDetailView(LoginRequiredMixin, DetailView):
+    model = House
+    template_name = 'house/house_detail.html'
+    context_object_name = 'house'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        house = self.get_object()
+        
+        # Get the owner of this house
+        context['owner'] = house.owner_set.first()
+        
+        # If there's an owner, set up the form with their data
+        if context['owner']:
+            context['owner_form'] = OwnerForm(instance=context['owner'])
+        else:
+            context['owner_form'] = OwnerForm()
+        
+        # Add all houses for the dropdown
+        context['houses'] = House.objects.all()
+        
+        # For debugging
+        print("House:", house)
+        print("Owner:", context['owner'])
+        
+        return context
+    
+    def post(self, request, *args, **kwargs):
+        house = self.get_object()
+        current_owner = house.owner_set.first()
+        
+        if current_owner:
+            # Update existing owner
+            form = OwnerForm(request.POST, instance=current_owner)
+        else:
+            # Create new owner
+            form = OwnerForm(request.POST)
+        
+        if form.is_valid():
+            owner = form.save(commit=False)
+            owner.created_by = request.user
+            owner.save()
+            
+            # Associate owner with house
+            owner.house.clear()  # Remove any existing house associations
+            owner.house.add(house)
+            house.status = 'owned'
+            house.save()
+            
+            messages.success(request, 'House owner updated successfully.')
+            return redirect('house-detail', pk=house.pk)
+        else:
+            messages.error(request, 'Error updating house owner. Please check the form.')
+            return self.render_to_response(self.get_context_data(owner_form=form))
 
 class HouseUpdateView(LoginRequiredMixin, UpdateView):
     model = House
