@@ -79,10 +79,8 @@ class HouseDetailView(LoginRequiredMixin, DetailView):
         context = super().get_context_data(**kwargs)
         house = self.get_object()
         
-        # Get the owner of this house
         context['owner'] = house.owner_set.first()
         
-        # If there's an owner, set up the form with their data
         if context['owner']:
             context['owner_form'] = OwnerForm(instance=context['owner'])
         else:
@@ -91,9 +89,12 @@ class HouseDetailView(LoginRequiredMixin, DetailView):
         # Add all houses for the dropdown
         context['houses'] = House.objects.all()
         
-        # For debugging
-        print("House:", house)
-        print("Owner:", context['owner'])
+        search_query = self.request.GET.get('search', '')
+        if search_query:
+            context['extra_url_params'] = f'&search={search_query}'
+        else:
+            context['extra_url_params'] = ''
+        
         
         return context
     
