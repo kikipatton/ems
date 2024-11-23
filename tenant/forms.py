@@ -16,7 +16,7 @@ class TenantForm(forms.ModelForm):
         fields = [
             'first_name', 'middle_name', 'last_name', 'email', 
             'phone_number', 'id_cardnumber', 'nationality', 'house',
-            'status'  # Added status field
+            'status', 'enddate_at'  # Added status field
         ]
         widgets = {
             'enddate_at': forms.DateTimeInput(

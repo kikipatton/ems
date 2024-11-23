@@ -82,16 +82,19 @@ class TenantDetailView(LoginRequiredMixin, DetailView):
         action = request.POST.get('action')
         
         if action == 'end_tenancy':
-            tenant.end_tenancy()  # Using the new model method
+            # Update tenant status and end date
+            tenant.status = 'ended'
+            tenant.enddate_at = timezone.now()
+            tenant.save()
+            
+            # Update house status
+            if tenant.house:
+                house = tenant.house
+                house.status = 'vacant'
+                house.save()
+                
             messages.success(request, 'Tenancy ended successfully.')
             return redirect('tenant-list')
-        elif action == 'update_status':
-            new_status = request.POST.get('status')
-            if new_status in dict(Tenant.STATUS_CHOICES):
-                tenant.status = new_status
-                tenant.save()
-                messages.success(request, f'Tenant status updated to {dict(Tenant.STATUS_CHOICES)[new_status]}.')
-            return redirect('tenant-detail', pk=tenant.pk)
             
         return super().get(request, *args, **kwargs)
 

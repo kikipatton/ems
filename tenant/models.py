@@ -70,6 +70,7 @@ class Household(models.Model):
         on_delete=models.SET_NULL, 
         null=True
     )
+    enddate_at = models.DateTimeField(null=True, blank=True)
 
     def get_full_name(self):
         return f"{self.first_name} {self.last_name}"
