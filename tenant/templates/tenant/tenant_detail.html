@@ -325,47 +325,182 @@
                             </h5>
                             <div class="info-container">
                                 <form id="formTenantSettings" method="POST" action="{% url 'tenant-update' tenant.pk %}">
-                                    {% csrf_token %}
-                                    <div class="row">
-                                        <div class="mb-4 col-md-6">
-                                            <label class="form-label">First Name</label>
-                                            <input class="form-control" type="text" name="first_name" 
-                                                value="{{ tenant.first_name }}" autofocus />
+                                {% csrf_token %}
+                                <div class="row">
+                                    <div class="mb-4 col-md-6">
+                                        <label class="form-label" for="{{ form.first_name.id_for_label }}">First Name</label>
+                                        <input 
+                                            type="text" 
+                                            name="{{ form.first_name.name }}"
+                                            value="{{ form.first_name.value|default:'' }}"
+                                            id="{{ form.first_name.id_for_label }}"
+                                            class="form-control"
+                                            placeholder="John" />
+                                        {% if form.first_name.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ form.first_name.errors.0 }}
                                         </div>
-                                        <div class="mb-4 col-md-6">
-                                            <label class="form-label">Last Name</label>
-                                            <input class="form-control" type="text" name="last_name" 
-                                                value="{{ tenant.last_name }}" />
+                                        {% endif %}
+                                    </div>
+
+                                    <div class="mb-4 col-md-6">
+                                        <label class="form-label" for="{{ form.middle_name.id_for_label }}">Middle Name</label>
+                                        <input 
+                                            type="text" 
+                                            name="{{ form.middle_name.name }}"
+                                            value="{{ form.middle_name.value|default:'' }}"
+                                            id="{{ form.middle_name.id_for_label }}"
+                                            class="form-control"
+                                            placeholder="Middle Name" />
+                                    </div>
+
+                                    <div class="mb-4 col-md-6">
+                                        <label class="form-label" for="{{ form.last_name.id_for_label }}">Last Name</label>
+                                        <input 
+                                            type="text" 
+                                            name="{{ form.last_name.name }}"
+                                            value="{{ form.last_name.value|default:'' }}"
+                                            id="{{ form.last_name.id_for_label }}"
+                                            class="form-control"
+                                            placeholder="Doe" />
+                                        {% if form.last_name.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ form.last_name.errors.0 }}
                                         </div>
-                                        <div class="mb-4 col-md-6">
-                                            <label class="form-label">Email</label>
-                                            <input class="form-control" type="email" name="email" 
-                                                value="{{ tenant.email }}" />
+                                        {% endif %}
+                                    </div>
+
+                                    <div class="mb-4 col-md-6">
+                                        <label class="form-label" for="{{ form.email.id_for_label }}">Email</label>
+                                        <input 
+                                            type="email" 
+                                            name="{{ form.email.name }}"
+                                            value="{{ form.email.value|default:'' }}"
+                                            id="{{ form.email.id_for_label }}"
+                                            class="form-control"
+                                            placeholder="example@domain.com" />
+                                        {% if form.email.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ form.email.errors.0 }}
                                         </div>
-                                        <div class="mb-4 col-md-6">
-                                            <label class="form-label">Phone Number</label>
-                                            <input class="form-control" type="text" name="phone_number" 
-                                                value="{{ tenant.phone_number }}" />
+                                        {% endif %}
+                                    </div>
+
+                                    <div class="mb-4 col-md-6">
+                                        <label class="form-label" for="{{ form.phone_number.id_for_label }}">Phone Number</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text">KE</span>
+                                            <input 
+                                                type="text" 
+                                                name="{{ form.phone_number.name }}"
+                                                value="{{ form.phone_number.value|default:'' }}"
+                                                id="{{ form.phone_number.id_for_label }}"
+                                                class="form-control phone-number-mask"
+                                                placeholder="0712121212" />
                                         </div>
-                                        <div class="mb-4 col-md-6">
-                                            <label class="form-label">ID Number</label>
-                                            <input class="form-control" type="number" name="id_cardnumber" 
-                                                value="{{ tenant.id_cardnumber }}" />
+                                        {% if form.phone_number.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ form.phone_number.errors.0 }}
                                         </div>
-                                        <div class="mb-4 col-md-6">
-                                            <label class="form-label">Nationality</label>
-                                            <select name="nationality" class="form-select">
-                                                <option value="{{ tenant.nationality }}" selected>
-                                                    {{ tenant.nationality }}
+                                        {% endif %}
+                                    </div>
+
+                                    <div class="mb-4 col-md-6">
+                                        <label class="form-label" for="{{ form.id_cardnumber.id_for_label }}">ID Number</label>
+                                        <input 
+                                            type="number" 
+                                            name="{{ form.id_cardnumber.name }}"
+                                            value="{{ form.id_cardnumber.value|default:'' }}"
+                                            id="{{ form.id_cardnumber.id_for_label }}"
+                                            class="form-control"
+                                            placeholder="12345678" />
+                                        {% if form.id_cardnumber.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ form.id_cardnumber.errors.0 }}
+                                        </div>
+                                        {% endif %}
+                                    </div>
+
+                                    <div class="mb-4 col-md-6">
+                                        <label class="form-label" for="{{ form.nationality.id_for_label }}">Nationality</label>
+                                        <select 
+                                            name="{{ form.nationality.name }}"
+                                            id="{{ form.nationality.id_for_label }}"
+                                            class="form-select select2"
+                                            data-allow-clear="true">
+                                            <option value="">Select Nationality</option>
+                                            <option value="KENYAN" {% if form.nationality.value == 'KENYAN' %}selected{% endif %}>Kenyan</option>
+                                            <option value="UGANDAN" {% if form.nationality.value == 'UGANDAN' %}selected{% endif %}>Ugandan</option>
+                                            <option value="TANZANIAN" {% if form.nationality.value == 'TANZANIAN' %}selected{% endif %}>Tanzanian</option>
+                                            <option value="ETHIOPIAN" {% if form.nationality.value == 'ETHIOPIAN' %}selected{% endif %}>Ethiopian</option>
+                                            <option value="RWANDAN" {% if form.nationality.value == 'RWANDAN' %}selected{% endif %}>Rwandan</option>
+                                            <option value="OTHER" {% if form.nationality.value == 'OTHER' %}selected{% endif %}>Other</option>
+                                        </select>
+                                        {% if form.nationality.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ form.nationality.errors.0 }}
+                                        </div>
+                                        {% endif %}
+                                    </div>
+
+                                    <div class="mb-4 col-md-6">
+                                        <label class="form-label" for="{{ form.house.id_for_label }}">House</label>
+                                        <select 
+                                            name="{{ form.house.name }}"
+                                            id="{{ form.house.id_for_label }}"
+                                            class="form-select select2">
+                                            <option value="">Select House</option>
+                                            {% for house in form.house.field.queryset %}
+                                                <option value="{{ house.id }}" {% if house.id == form.house.value|add:"0" %}selected{% endif %}>
+                                                    {{ house.hse_number }}
                                                 </option>
-                                                <!-- Add other nationality options -->
-                                            </select>
+                                            {% endfor %}
+                                        </select>
+                                        {% if form.house.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ form.house.errors.0 }}
                                         </div>
+                                        {% endif %}
                                     </div>
-                                    <div class="d-flex justify-content-center">
-                                        <button type="submit" class="btn btn-primary me-3">Save changes</button>
+
+                                    <div class="mb-4 col-md-6">
+                                        <label class="form-label" for="{{ form.status.id_for_label }}">Status</label>
+                                        <select 
+                                            name="{{ form.status.name }}"
+                                            id="{{ form.status.id_for_label }}"
+                                            class="form-select">
+                                            {% for value, label in form.fields.status.choices %}
+                                                <option value="{{ value }}" {% if value == form.status.value %}selected{% endif %}>
+                                                    {{ label }}
+                                                </option>
+                                            {% endfor %}
+                                        </select>
+                                        {% if form.status.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ form.status.errors.0 }}
+                                        </div>
+                                        {% endif %}
                                     </div>
-                                </form>
+
+                                    <div class="mb-4 col-md-6" id="enddateGroup" style="display: none;">
+                                        <label class="form-label" for="{{ form.enddate_at.id_for_label }}">End Date</label>
+                                        <input 
+                                            type="datetime-local"
+                                            name="{{ form.enddate_at.name }}"
+                                            value="{{ form.enddate_at.value|date:'Y-m-d\TH:i'|default:'' }}"
+                                            id="{{ form.enddate_at.id_for_label }}"
+                                            class="form-control" />
+                                        {% if form.enddate_at.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ form.enddate_at.errors.0 }}
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="d-flex justify-content-center">
+                                    <button type="submit" class="btn btn-primary me-3">Save changes</button>
+                                </div>
+                            </form>
                             </div>
                         </div>
                     </div>
@@ -422,7 +557,7 @@
                                 <div class="card-header d-flex justify-content-between align-items-center">
                                     <h5 class="mb-0">Household Members</h5>
                                     <button type="button" class="btn btn-primary btn-sm" 
-                                            data-bs-toggle="modal" data-bs-target="#addHouseholdModal">
+                                            data-bs-toggle="modal" data-bs-target="#householdModal">
                                         <i class="ti ti-plus me-1"></i> Add Member
                                     </button>
                                 </div>
@@ -446,8 +581,10 @@
                                                     <td>{{ member.phone_number }}</td>
                                                     <td>{{ member.id_cardnumber }}</td>
                                                     <td>
-                                                        <a href="{% url 'household-update' member.pk %}" 
-                                                        class="btn btn-sm btn-info">
+                                                        <a href="{% url 'tenant-detail' tenant.pk %}?edit_household={{ member.pk }}" 
+                                                        class="btn btn-sm btn-info" 
+                                                        data-bs-toggle="modal" 
+                                                        data-bs-target="#householdModal">
                                                             <i class="ti ti-edit"></i>
                                                         </a>
                                                     </td>
@@ -482,37 +619,113 @@
             </div>
         </div>
 
-        <!-- Add Household Modal -->
-        <div class="modal fade" id="addHouseholdModal" tabindex="-1">
-            <div class="modal-dialog">
+        <!-- Household Modal -->
+        <div class="modal fade" id="householdModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-simple modal-edit-household">
                 <div class="modal-content">
-                    <form method="POST" action="{% url 'household-create' tenant.pk %}">
-                        {% csrf_token %}
-                        <div class="modal-header">
-                            <h5 class="modal-title">Add Household Member</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <div class="modal-body">
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <div class="text-center mb-6">
+                            <h4 class="mb-2">{% if household %}Edit{% else %}Add{% endif %} Household Member</h4>
+                            <p>Managing household member details will receive a privacy audit.</p>
                         </div>
-                        <div class="modal-body">
-                            {% for field in household_form %}
-                            <div class="mb-3">
-                                <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
-                                {{ field }}
-                                {% if field.errors %}
-                                <div class="invalid-feedback d-block">
-                                    {{ field.errors.0 }}
-                                </div>
-                                {% endif %}
+                        <form id="householdForm" class="row g-6" method="POST" 
+                            action="{% if household %}{% url 'household-update' household.pk %}{% else %}{% url 'household-create' tenant.pk %}{% endif %}">
+                            {% csrf_token %}
+                            <div class="col-12 col-md-6">
+                                <label class="form-label" for="modalFirstName">First Name</label>
+                                <input
+                                    type="text"
+                                    id="modalFirstName"
+                                    name="first_name"
+                                    class="form-control"
+                                    value="{{ household.first_name|default:'' }}"
+                                    placeholder="John"/>
                             </div>
-                            {% endfor %}
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary">Add Member</button>
-                        </div>
-                    </form>
+                            <div class="col-12 col-md-6">
+                                <label class="form-label" for="modalLastName">Last Name</label>
+                                <input
+                                    type="text"
+                                    id="modalLastName"
+                                    name="last_name"
+                                    class="form-control"
+                                    value="{{ household.last_name|default:'' }}"
+                                    placeholder="Doe"/>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <label class="form-label" for="modalEmail">Email</label>
+                                <input
+                                    type="email"
+                                    id="modalEmail"
+                                    name="email"
+                                    class="form-control"
+                                    value="{{ household.email|default:'' }}"
+                                    placeholder="example@domain.com"/>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <label class="form-label" for="modalPhone">Phone Number</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">KE</span>
+                                    <input
+                                        type="text"
+                                        id="modalPhone"
+                                        name="phone_number"
+                                        class="form-control phone-number-mask"
+                                        value="{{ household.phone_number|default:'' }}"
+                                        placeholder="0712121212"/>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <label class="form-label" for="modalIdNumber">ID Number</label>
+                                <input
+                                    type="number"
+                                    id="modalIdNumber"
+                                    name="id_cardnumber"
+                                    class="form-control"
+                                    value="{{ household.id_cardnumber|default:'' }}"
+                                    placeholder="12345678"/>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <label class="form-label" for="modalNationality">Nationality</label>
+                                <select
+                                    id="modalNationality"
+                                    name="nationality"
+                                    class="select2 form-select"
+                                    data-allow-clear="true">
+                                    <option value="">Select</option>
+                                    <option value="KENYAN" {% if household.nationality == 'KENYAN' %}selected{% endif %}>Kenyan</option>
+                                    <option value="UGANDAN" {% if household.nationality == 'UGANDAN' %}selected{% endif %}>Ugandan</option>
+                                    <option value="TANZANIAN" {% if household.nationality == 'TANZANIAN' %}selected{% endif %}>Tanzanian</option>
+                                    <option value="ETHIOPIAN" {% if household.nationality == 'ETHIOPIAN' %}selected{% endif %}>Ethiopian</option>
+                                    <option value="RWANDAN" {% if household.nationality == 'RWANDAN' %}selected{% endif %}>Rwandan</option>
+                                    <option value="OTHER" {% if household.nationality == 'OTHER' %}selected{% endif %}>Other</option>
+                                </select>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label" for="modalAddress">Address</label>
+                                <textarea
+                                    id="modalAddress"
+                                    name="address"
+                                    class="form-control"
+                                    rows="3"
+                                    placeholder="Enter address">{{ household.address|default:'' }}</textarea>
+                            </div>
+                            <div class="col-12 text-center">
+                                <button type="submit" class="btn btn-primary me-3">Submit</button>
+                                <button
+                                    type="reset"
+                                    class="btn btn-label-secondary"
+                                    data-bs-dismiss="modal"
+                                    aria-label="Close">
+                                    Cancel
+                                </button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
+
 
         <!-- End Tenancy Modal -->
         <div class="modal fade" id="endTenancyModal" tabindex="-1">
@@ -598,6 +811,35 @@
 
     <!-- endbuild -->
     <script>
+    $(document).ready(function() {
+        // Handle edit household link clicks
+        $('a[href*="edit_household"]').on('click', function(e) {
+            e.preventDefault();
+            const url = $(this).attr('href');
+            
+            // Extract the household ID from the URL
+            const householdId = url.split('edit_household=')[1];
+            
+            // Fetch household details
+            $.get(`/tenant/household/${householdId}/update/`, function(data) {
+                $('#modalFirstName').val(data.household.first_name);
+                $('#modalLastName').val(data.household.last_name);
+                $('#modalEmail').val(data.household.email);
+                $('#modalPhone').val(data.household.phone_number);
+                $('#modalIdNumber').val(data.household.id_cardnumber);
+                $('#modalNationality').val(data.household.nationality).trigger('change');
+                $('#modalAddress').val(data.household.address);
+                
+                // Update form action
+                $('#householdForm').attr('action', `/tenant/household/${householdId}/update/`);
+                
+                // Show modal
+                $('#householdModal').modal('show');
+            });
+        });
+    });
+    </script>
+    <script>
     document.addEventListener('DOMContentLoaded', function() {
         // Initialize Select2 - make sure this runs after the offcanvas is shown
         $('#offcanvasAddTenant').on('shown.bs.offcanvas', function () {
@@ -632,6 +874,14 @@
                 dropdownParent: $(this).closest('.offcanvas'),
                 width: '100%'
             });
+        });
+    });
+    </script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        $('.select2').select2({
+            dropdownParent: $('#householdModal'),
+            width: '100%'
         });
     });
     </script>

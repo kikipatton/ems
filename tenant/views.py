@@ -9,6 +9,7 @@ from django.db.models import Q
 from .models import Tenant, Household
 from house.models import House
 from .forms import TenantForm, HouseholdForm
+from django.http import JsonResponse
 
 class TenantListView(LoginRequiredMixin, ListView):
     model = Tenant
@@ -74,59 +75,89 @@ class TenantDetailView(LoginRequiredMixin, DetailView):
         context = super().get_context_data(**kwargs)
         context['household_form'] = HouseholdForm()
         context['households'] = self.object.household_set.all()
-        context['status_choices'] = Tenant.STATUS_CHOICES
+        context['form'] = TenantForm(instance=self.object)
+        # If editing, add the household to context
+        household_id = self.request.GET.get('edit_household')
+        if household_id:
+            context['household'] = get_object_or_404(Household, pk=household_id)
         return context
     
     def post(self, request, *args, **kwargs):
-        tenant = self.get_object()
+        self.object = self.get_object()
         action = request.POST.get('action')
         
-        if action == 'end_tenancy':
-            # Update tenant status and end date
-            tenant.status = 'ended'
-            tenant.enddate_at = timezone.now()
-            tenant.save()
+        if action == 'update_status':
+            status = request.POST.get('status')
+            self.object.status = status
             
-            # Update house status
-            if tenant.house:
-                house = tenant.house
-                house.status = 'vacant'
-                house.save()
+            # Handle ending tenancy
+            if status == 'ended':
+                self.object.enddate_at = timezone.now()
+                if self.object.house:
+                    self.object.house.status = 'vacant'
+                    self.object.house.save()
+            
+            self.object.save()
+            messages.success(request, f'Tenant status updated to {status}.')
+            
+        elif action == 'end_tenancy':
+            self.object.status = 'ended'
+            self.object.enddate_at = timezone.now()
+            
+            if self.object.house:
+                self.object.house.status = 'vacant'
+                self.object.house.save()
                 
+            self.object.save()
             messages.success(request, 'Tenancy ended successfully.')
-            return redirect('tenant-list')
-            
-        return super().get(request, *args, **kwargs)
+        
+        return redirect('tenant-detail', pk=self.object.pk)
 
 class TenantUpdateView(LoginRequiredMixin, UpdateView):
     model = Tenant
     form_class = TenantForm
-    template_name = 'tenant/tenant_form.html'
+    template_name = 'tenant/tenant_detail.html'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['households'] = self.object.household_set.all()
+        return context
+    
+    def form_valid(self, form):
+        # Store old house reference
+        old_house = None
+        if self.object.house:
+            old_house = self.object.house
+
+        # Save the form
+        response = super().form_valid(form)
+        
+        # Handle house status updates
+        if old_house and old_house != self.object.house:
+            old_house.status = 'vacant'
+            old_house.save()
+            
+        if self.object.house:
+            if self.object.status == 'ended':
+                self.object.house.status = 'vacant'
+            else:
+                self.object.house.status = 'occupied'
+            self.object.house.save()
+        
+        messages.success(self.request, 'Tenant updated successfully.')
+        return response
+
+    def form_invalid(self, form):
+        messages.error(self.request, 'Failed to update tenant. Please check the form.')
+        return self.render_to_response(self.get_context_data(form=form))
     
     def get_success_url(self):
         return reverse_lazy('tenant-detail', kwargs={'pk': self.object.pk})
-    
-    def form_valid(self, form):
-        response = super().form_valid(form)
-        
-        # Handle house status updates based on tenant status
-        if self.object.status == 'ended':
-            if self.object.house:
-                self.object.house.status = 'vacant'
-                self.object.house.save()
-        elif self.object.status == 'active':
-            if self.object.house:
-                self.object.house.status = 'occupied'
-                self.object.house.save()
-                
-        messages.success(self.request, 'Tenant updated successfully.')
-        return response
 
 # Household Views
 class HouseholdCreateView(LoginRequiredMixin, CreateView):
     model = Household
     form_class = HouseholdForm
-    template_name = 'tenant/household_form.html'
     
     def form_valid(self, form):
         tenant = get_object_or_404(Tenant, pk=self.kwargs['tenant_pk'])
@@ -136,13 +167,39 @@ class HouseholdCreateView(LoginRequiredMixin, CreateView):
         messages.success(self.request, 'Household member added successfully.')
         return response
     
+    def form_invalid(self, form):
+        messages.error(self.request, 'Failed to add household member. Please check the form.')
+        return redirect('tenant-detail', pk=self.kwargs['tenant_pk'])
+    
     def get_success_url(self):
         return reverse_lazy('tenant-detail', kwargs={'pk': self.kwargs['tenant_pk']})
 
+    # Remove template_name since we're not rendering a separate template
+    def get(self, request, *args, **kwargs):
+        # Redirect GET requests to the tenant detail page
+        return redirect('tenant-detail', pk=self.kwargs['tenant_pk'])
+
+# views.py
 class HouseholdUpdateView(LoginRequiredMixin, UpdateView):
     model = Household
     form_class = HouseholdForm
-    template_name = 'tenant/household_form.html'
     
     def get_success_url(self):
         return reverse_lazy('tenant-detail', kwargs={'pk': self.object.tenant.pk})
+    
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        messages.success(self.request, 'Household member updated successfully.')
+        return response
+    
+    def form_invalid(self, form):
+        messages.error(self.request, 'Failed to update household member. Please check the form.')
+        return redirect('tenant-detail', pk=self.object.tenant.pk)
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        context = {
+            'household': self.object,
+            'tenant': self.object.tenant
+        }
+        return JsonResponse(context)

@@ -14,10 +14,10 @@ class Tenant(models.Model):
     first_name = models.CharField(max_length=100)
     middle_name = models.CharField(max_length=100, blank=True)
     last_name = models.CharField(max_length=100)
-    email = models.EmailField(unique=True)
+    email = models.EmailField(unique=True, blank=True)
     phone_number = models.CharField(max_length=20, unique=True)
     id_cardnumber = models.PositiveIntegerField('ID NUMBER', unique=True)
-    nationality = models.CharField(max_length=20)
+    nationality = models.CharField(max_length=20, blank=True)
     house = models.OneToOneField(
         House,
         related_name='current_tenant',
@@ -55,10 +55,10 @@ class Tenant(models.Model):
 class Household(models.Model):    
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
-    email = models.EmailField(unique=True)
+    email = models.EmailField(unique=True, blank=True)
     phone_number = models.CharField(max_length=20, unique=True)
     id_cardnumber = models.PositiveIntegerField('ID NUMBER', unique=True)
-    address = models.TextField()
+    address = models.TextField(blank=True)
     nationality = models.CharField(max_length=20)
     tenant = models.ForeignKey(
         Tenant,

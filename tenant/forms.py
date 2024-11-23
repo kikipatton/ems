@@ -16,7 +16,7 @@ class TenantForm(forms.ModelForm):
         fields = [
             'first_name', 'middle_name', 'last_name', 'email', 
             'phone_number', 'id_cardnumber', 'nationality', 'house',
-            'status', 'enddate_at'  # Added status field
+            'status', 'enddate_at'  
         ]
         widgets = {
             'enddate_at': forms.DateTimeInput(
@@ -37,12 +37,6 @@ class TenantForm(forms.ModelForm):
                 models.Q(current_tenant__isnull=True) | 
                 models.Q(pk=instance.house_id)
             )
-        
-        # Add Bootstrap classes and customize status field
-        self.fields['status'].widget.attrs.update({
-            'class': 'form-select',
-            'onchange': 'handleStatusChange(this)'  # For potential JS interactions
-        })
         
     def clean(self):
         cleaned_data = super().clean()
