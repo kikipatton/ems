@@ -320,7 +320,7 @@
                             </div>
                             <h5 class="pb-4 border-bottom mb-4">
                                 <span class="badge bg-label-primary">
-                                    House: {% if tenant.house %}{{ tenant.house.hse_number }}{% else %}Unassigned{% endif %}
+                                    House: {% if tenant.get_current_tenancy %}{{ tenant.get_current_tenancy.house.hse_number }}{% else %}Unassigned{% endif %}
                                 </span>
                             </h5>
                             <div class="info-container">
@@ -442,7 +442,6 @@
                                         </div>
                                         {% endif %}
                                     </div>
-
                                     <div class="mb-4 col-md-6">
                                         <label class="form-label" for="{{ form.house.id_for_label }}">House</label>
                                         <select 
@@ -505,6 +504,53 @@
                         </div>
                     </div>
                     <!-- /Tenant Card -->
+
+                    <!--Tenant History-->
+                    <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Tenancy History</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>House</th>
+                                        <th>Start Date</th>
+                                        <th>End Date</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for tenancy in tenancy_history %}
+                                    <tr>
+                                        <td>{{ tenancy.house.hse_number }}</td>
+                                        <td>{{ tenancy.start_date|date:"M d, Y" }}</td>
+                                        <td>
+                                            {% if tenancy.end_date %}
+                                                {{ tenancy.end_date|date:"M d, Y" }}
+                                            {% else %}
+                                                <span class="badge bg-label-success">Active</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if tenancy.end_date %}
+                                                <span class="badge bg-label-secondary">Ended</span>
+                                            {% else %}
+                                                <span class="badge bg-label-success">Active</span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                        <td colspan="4" class="text-center">No tenancy history found</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
 
                     <!-- Status Card -->
                     <div class="card mb-6 border border-2 border-primary rounded primary-shadow">
@@ -574,26 +620,25 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                {% for member in households %}
-                                                <tr>
-                                                    <td>{{ member.get_full_name }}</td>
-                                                    <td>{{ member.email }}</td>
-                                                    <td>{{ member.phone_number }}</td>
-                                                    <td>{{ member.id_cardnumber }}</td>
-                                                    <td>
-                                                        <a href="{% url 'tenant-detail' tenant.pk %}?edit_household={{ member.pk }}" 
-                                                        class="btn btn-sm btn-info" 
-                                                        data-bs-toggle="modal" 
-                                                        data-bs-target="#householdModal">
-                                                            <i class="ti ti-edit"></i>
-                                                        </a>
-                                                    </td>
-                                                </tr>
-                                                {% empty %}
-                                                <tr>
-                                                    <td colspan="5" class="text-center">No household members registered</td>
-                                                </tr>
-                                                {% endfor %}
+                                              {% for member in households %}
+                                              <tr>
+                                                  <td>{{ member.get_full_name }}</td>
+                                                  <td>{{ member.email }}</td>
+                                                  <td>{{ member.phone_number }}</td>
+                                                  <td>{{ member.id_cardnumber }}</td>
+                                                  <td>{{ member.tenancy.house.hse_number }}</td>
+                                                  <td>
+                                                      <a href="{% url 'tenant-detail' tenant.pk %}?edit_household={{ member.pk }}" 
+                                                        class="btn btn-sm btn-info">
+                                                          <i class="ti ti-edit"></i>
+                                                      </a>
+                                                  </td>
+                                              </tr>
+                                              {% empty %}
+                                              <tr>
+                                                  <td colspan="6" class="text-center">No household members registered</td>
+                                              </tr>
+                                              {% endfor %}
                                             </tbody>
                                         </table>
                                     </div>

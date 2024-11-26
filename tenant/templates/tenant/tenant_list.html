@@ -408,8 +408,8 @@
                         <td>{{ tenant.phone_number }}</td>
                         <td>{{ tenant.id_cardnumber }}</td>
                         <td>
-                            {% if tenant.house %}
-                                {{ tenant.house.hse_number }}
+                            {% if tenant.get_current_tenancy %}
+                                {{ tenant.get_current_tenancy.house.hse_number }}
                             {% else %}
                                 <span class="badge bg-label-warning">No House</span>
                             {% endif %}
