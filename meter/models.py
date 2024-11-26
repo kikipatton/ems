@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-from house.models import House  # Assuming House model is in estates app
+from house.models import House 
 
 class Meter(models.Model):
     STATUS_CHOICES = [
