@@ -44,6 +44,7 @@ urlpatterns = [
     ), name='password_reset_complete'),
     path('', include('house.urls')),
     path('', include('tenant.urls')),
+    path('', include('meter.urls')),
 ]
 
 

@@ -24,7 +24,7 @@ class TenantForm(forms.ModelForm):
         fields = [
             'first_name', 'middle_name', 'last_name',
             'email', 'phone_number', 'id_cardnumber',
-            'nationality'
+            'nationality', 'status'
         ]
 
     def save(self, commit=True, created_by=None):

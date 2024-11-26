@@ -259,26 +259,7 @@
                       <div data-i18n="Tenants">Tenants</div>
                     </a>
                   </li>
-                  <li class="menu-item">
-                    <a class="menu-link menu-toggle">
-                      <i class="menu-icon tf-icons ti ti-gizmo"></i>
-                      <div data-i18n="Meter">Meter</div>
-                    </a>
-                    <ul class="menu-sub">
-                        <li class="menu-item">
-                            <a href="#" class="menu-link">
-                            <i class="menu-icon tf-icons ti ti-app-window"></i>
-                            <div data-i18n="List">List</div>
-                            </a>
-                        </li>
-                        <li class="menu-item">
-                            <a href="#" class="menu-link">
-                            <i class="menu-icon tf-icons ti ti-layout-grid-add"></i>
-                            <div data-i18n="Add Meter">Add Meter</div>
-                            </a>
-                        </li>
-                    </ul>
-                  </li>
+                
                 </ul>
               </div>
             </aside>
@@ -300,8 +281,8 @@
               <div
                 class="d-flex flex-column flex-sm-row align-items-center justify-content-sm-between mb-6 text-center text-sm-start gap-2">
                 <div class="mb-2 mb-sm-0">
-                  <h4 class="mb-1">HOUSE:{{ house.hse_number }}</h4>
-                  <p class="mb-0">Nov 17, 2024, 5:48 (ET)</p>
+                  <h4 class="mb-1">HOUSE: {{ house.hse_number }}</h4>
+                  <p class="mb-0">House Management</p>
                 </div>
                 <button type="button" class="btn btn-label-danger delete-customer">Delete Owner</button>
               </div>
@@ -423,8 +404,8 @@
                         >
                       </li>
                       <li class="nav-item">
-                        <a class="nav-link" href="app-ecommerce-customer-details-security.html"
-                          ><i class="ti ti-lock ti-sm me-1_5"></i>Tenant</a
+                        <a class="nav-link" href="{% url 'house-meter' house.pk %}"
+                          ><i class="ti ti-lock ti-sm me-1_5"></i>Meter</a
                         >
                       </li>
                <!---            <li class="nav-item">

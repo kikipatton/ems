@@ -16,6 +16,28 @@ class TenantListView(LoginRequiredMixin, ListView):
     context_object_name = 'tenants'
     paginate_by = 10
     
+    def get_queryset(self):
+        queryset = Tenant.objects.all()
+        
+        # Handle search
+        search_query = self.request.GET.get('search', '')
+        if search_query:
+            queryset = queryset.filter(
+                Q(first_name__icontains=search_query) |
+                Q(middle_name__icontains=search_query) |
+                Q(last_name__icontains=search_query) |
+                Q(email__icontains=search_query) |
+                Q(phone_number__icontains=search_query) |
+                Q(id_cardnumber__icontains=search_query)
+            )
+        
+        # Handle status filter
+        status_filter = self.request.GET.get('status', '')
+        if status_filter:
+            queryset = queryset.filter(status=status_filter)
+            
+        return queryset.order_by('-created_at')
+    
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         # Get available houses (those without active tenancies)
@@ -40,6 +62,7 @@ class TenantListView(LoginRequiredMixin, ListView):
         context['status_choices'] = Tenant.STATUS_CHOICES
         context['status_filter'] = self.request.GET.get('status', '')
         context['search_query'] = self.request.GET.get('search', '')
+        
         
         # Handle pagination parameters
         params = []
