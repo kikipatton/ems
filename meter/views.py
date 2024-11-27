@@ -41,10 +41,19 @@ class MeterCreateView(LoginRequiredMixin, CreateView):
     template_name = 'meter/house_meter.html'
     form_class = MeterForm
 
-    def post(self, request, *args, **kwargs):
-        form = self.form_class(request.POST)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
         house = get_object_or_404(House, pk=self.kwargs['house_pk'])
+        context['house'] = house
+        if 'form' not in context:
+            context['form'] = self.get_form()
+        return context
 
+    def post(self, request, *args, **kwargs):
+        self.object = None
+        form = self.get_form()
+        house = get_object_or_404(House, pk=self.kwargs['house_pk'])
+        
         if form.is_valid():
             meter = form.save(commit=False)
             meter.house = house
@@ -54,11 +63,12 @@ class MeterCreateView(LoginRequiredMixin, CreateView):
             else:
                 meter.save()
                 messages.success(request, 'Meter added successfully')
+                return self.form_valid(form)
                 
-        else:
-            messages.error(request, 'Please correct the errors in the form')
-            
-        return HttpResponseRedirect(reverse_lazy('house-meter', kwargs={'pk': house.pk}))
+        return self.form_invalid(form)
+
+    def get_success_url(self):
+        return reverse_lazy('house-meter', kwargs={'pk': self.kwargs['house_pk']})
 
 class MeterReplaceView(LoginRequiredMixin, UpdateView):
    model = Meter

@@ -3,16 +3,9 @@ from django.core.exceptions import ValidationError
 from .models import Meter, MeterReading
 
 class MeterForm(forms.ModelForm):
-    installation_date = forms.DateField(
-        widget=forms.DateInput(attrs={'type': 'date'})
-    )
-
     class Meta:
         model = Meter
         fields = ['meter_number', 'installation_date']
-        widgets = {
-            'meter_number': forms.TextInput(attrs={'class': 'form-control'})
-        }
 
     def clean_meter_number(self):
         meter_number = self.cleaned_data.get('meter_number')

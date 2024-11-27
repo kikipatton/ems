@@ -422,41 +422,41 @@
 
                 <!-- Add Meter Modal -->
                 <div class="modal fade" id="addMeterModal" tabindex="-1" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Add New Meter</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form method="post" action="{% url 'meter-create' house.pk %}">
-                        {% csrf_token %}
-                        <div class="mb-3">
-                            <label class="form-label" for="meter_number">Meter Number</label>
-                            {{ form.meter_number }}
-                            {% if form.meter_number.errors %}
-                            <div class="invalid-feedback d-block">
-                            {{ form.meter_number.errors }}
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Add New Meter</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
-                            {% endif %}
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label" for="installation_date">Installation Date</label>
-                            {{ form.installation_date }}
-                            {% if form.installation_date.errors %}
-                            <div class="invalid-feedback d-block">
-                            {{ form.installation_date.errors }}
+                            <div class="modal-body">
+                                <form method="post" action="{% url 'meter-create' house.pk %}">
+                                    {% csrf_token %}
+                                    <div class="mb-3">
+                                        <label class="form-label" for="meter_number">Meter Number</label>
+                                        <input type="text" class="form-control" name="meter_number" id="meter_number" required>
+                                        {% if form.meter_number.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ form.meter_number.errors }}
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label" for="installation_date">Installation Date</label>
+                                        <input type="date" class="form-control" name="installation_date" id="installation_date" required>
+                                        {% if form.installation_date.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ form.installation_date.errors }}
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-label-secondary" data-bs-dismiss="modal">Cancel</button>
+                                        <button type="submit" class="btn btn-primary">Save Meter</button>
+                                    </div>
+                                </form>
                             </div>
-                            {% endif %}
                         </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-label-secondary" data-bs-dismiss="modal">Cancel</button>
-                            <button type="submit" class="btn btn-primary">Save Meter</button>
-                        </div>
-                        </form>
                     </div>
-                    </div>
-                </div>
                 </div>
 
                 {% if meter %}
