@@ -3,7 +3,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 from django.contrib import messages
-from django.http import HttpResponseRedirect
+from django.utils import timezone
 from house.models import House
 from .models import Meter, MeterReading
 from django.utils.timezone import now
@@ -19,21 +19,29 @@ class HouseMeterView(LoginRequiredMixin, DetailView):
         meter = self.object.meters.filter(is_current=True).first()
         context['meter'] = meter
         
-        if meter:
-            readings = meter.readings.all()
-            context['readings'] = readings
+        if not meter:
+            return context
             
-            if readings.exists():
-                total_consumption = sum(reading.consumption for reading in readings)
-                total_bill = sum(reading.bill_amount for reading in readings)
-                highest_reading = max(readings, key=lambda x: x.consumption)
-                
-                context.update({
-                    'total_consumption': total_consumption,
-                    'total_bill': total_bill,
-                    'highest_reading': highest_reading,
-                    'avg_consumption': round(total_consumption / readings.count(), 2)
-                })
+        readings = meter.readings.all()
+        context['readings'] = readings
+        
+        if meter.readings.exists():
+            context['previous_reading'] = meter.readings.order_by('-reading_date', '-id').first().current_reading
+        else:
+            context['previous_reading'] = 0
+            return context
+            
+        total_consumption = sum(reading.consumption for reading in readings)
+        total_bill = sum(reading.bill_amount for reading in readings)
+        highest_reading = max(readings, key=lambda x: x.consumption)
+        
+        context.update({
+            'total_consumption': total_consumption,
+            'total_bill': total_bill,
+            'highest_reading': highest_reading,
+            'avg_consumption': round(total_consumption / readings.count(), 2)
+        })
+        
         return context
 
 class MeterCreateView(LoginRequiredMixin, CreateView):
@@ -105,6 +113,7 @@ class ReadingCreateView(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         form.instance.meter_id = self.kwargs['meter_pk']
         form.instance.read_by = self.request.user
+        form.instance.reading_date = timezone.now().date()
         return super().form_valid(form)
 
     def get_success_url(self):

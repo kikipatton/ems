@@ -29,7 +29,7 @@ class MeterReplacementForm(forms.ModelForm):
 class MeterReadingForm(forms.ModelForm):
     class Meta:
         model = MeterReading
-        fields = ['current_reading', 'reading_date']
+        fields = ['current_reading']
 
     def __init__(self, meter=None, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -53,7 +53,7 @@ class MeterReadingForm(forms.ModelForm):
             
             if current_reading <= last_reading_value:
                 raise ValidationError({
-                    'current_reading': 'Current reading must be greater than the previous reading ({})'.format(last_reading_value)
+                    'current_reading': f'Current reading must be greater than the previous reading ({last_reading_value})'
                 })
         
         return cleaned_data
