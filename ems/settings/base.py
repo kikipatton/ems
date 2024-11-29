@@ -18,6 +18,7 @@ INSTALLED_APPS = [
     'house.apps.HouseConfig',
     'meter.apps.MeterConfig',
     'tenant.apps.TenantConfig',
+    'systemconf.apps.SystemconfConfig',
 ]
 
 MIDDLEWARE = [
