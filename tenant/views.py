@@ -14,7 +14,7 @@ class TenantListView(LoginRequiredMixin, ListView):
     model = Tenant
     template_name = 'tenant/tenant_list.html'
     context_object_name = 'tenants'
-    paginate_by = 10
+    paginate_by = 100
     
     def get_queryset(self):
         queryset = Tenant.objects.all()
