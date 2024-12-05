@@ -1,4 +1,4 @@
-from django.views.generic import ListView, CreateView, UpdateView, DeleteView, DetailView
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView, DetailView, View
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.utils import timezone
@@ -228,5 +228,18 @@ class GarbageCollectionUpdateView(LoginRequiredMixin, UpdateView):
             self.object.garbage_collection_date = timezone.now()
         self.object.save()
         
-        messages.success(request, 'Garbage collection status updated successfully.')
+        messages.success(request, 'Paper bin collected.')
         return redirect(self.get_success_url())
+    
+class ResetGarbageCollectionView(View):
+    def test_func(self):
+        # Only allow superusers to access this view
+        return self.request.user.is_superuser
+    
+    def get(self, request, *args, **kwargs):
+        # Reset all houses to uncollected status
+        houses = House.objects.all()
+        updated = houses.update(garbage_collected=False)
+        
+        messages.success(request, f'Successfully reset garbage collection status for {updated} houses.')
+        return redirect('house-list')

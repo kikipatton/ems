@@ -277,7 +277,7 @@
                         class="btn {% if house.garbage_collected %}btn-label-success{% else %}btn-label-danger{% endif %}" 
                         data-bs-toggle="modal" 
                         data-bs-target="#garbageModal-{{ house.pk }}">
-                    {% if house.garbage_collected %}Garbage Collected{% else %}Collect Garbage{% endif %}
+                    {% if house.garbage_collected %}Paper Bin Collected{% else %}Collect Paper Bin{% endif %}
                 </button>
               </div>
 
@@ -667,12 +667,12 @@
                               <div class="modal-body p-4">
                                   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                   <div class="text-center mb-4">
-                                      <h4 class="mb-2">Garbage Collection Status</h4>
+                                      <h4 class="mb-2">Paper Bin Collection Status</h4>
                                       <p>
                                           {% if house.garbage_collected %}
-                                              Are you sure you want to mark garbage as uncollected?
+                                              Are you sure you want to mark paper bin as uncollected?
                                           {% else %}
-                                              Confirm garbage collection for this house?
+                                              Confirm Paper Bin collection for this house?
                                           {% endif %}
                                       </p>
                                   </div>

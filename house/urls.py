@@ -17,4 +17,7 @@ urlpatterns = [
     
     # Garbageurl
     path('house/<int:pk>/garbage-collection/', views.GarbageCollectionUpdateView.as_view(), name='garbage-collection'),
+    
+    # resetgarbagestatuseachmonth
+    path('reset-garbage/', views.ResetGarbageCollectionView.as_view(), name='reset-garbage'),
 ]
