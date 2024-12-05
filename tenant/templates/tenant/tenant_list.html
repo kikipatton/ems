@@ -425,11 +425,6 @@
                                             <i class="ti ti-eye me-1"></i> View Details
                                         </a>
                                     </li>
-                                    <li>
-                                        <a class="dropdown-item" href="{% url 'tenant-update' tenant.pk %}">
-                                            <i class="ti ti-edit me-1"></i> Edit
-                                        </a>
-                                    </li>
                                     {% if tenant.status == 'active' %}
                                     <li>
                                         <a class="dropdown-item text-warning" href="#" onclick="updateTenantStatus('{{ tenant.pk }}', 'notice')">
