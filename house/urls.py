@@ -14,4 +14,7 @@ urlpatterns = [
     path('owner/new/',views.OwnerCreateView.as_view(), name='owner-create'),
     path('owner/<int:pk>/update/', views.OwnerUpdateView.as_view(), name='owner-update'),
     path('owners/<int:pk>/delete/', views.OwnerDeleteView.as_view(), name='owner-delete'),
+    
+    # Garbageurl
+    path('house/<int:pk>/garbage-collection/', views.GarbageCollectionUpdateView.as_view(), name='garbage-collection'),
 ]

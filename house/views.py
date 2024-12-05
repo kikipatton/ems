@@ -1,6 +1,7 @@
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView, DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
+from django.utils import timezone
 from django.shortcuts import redirect
 from django.contrib import messages
 from django.db.models import Q
@@ -213,3 +214,19 @@ class OwnerDeleteView(LoginRequiredMixin, DeleteView):
     model = Owner
     template_name = 'owners/owner_confirm_delete.html'
     success_url = reverse_lazy('owner-list')
+
+    
+class GarbageCollectionUpdateView(LoginRequiredMixin, UpdateView):
+    model = House
+    fields = []  # Empty since we're not using form fields directly
+    success_url = reverse_lazy('house-list')
+    
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()  # Set self.object
+        self.object.garbage_collected = not self.object.garbage_collected
+        if self.object.garbage_collected:
+            self.object.garbage_collection_date = timezone.now()
+        self.object.save()
+        
+        messages.success(request, 'Garbage collection status updated successfully.')
+        return redirect(self.get_success_url())

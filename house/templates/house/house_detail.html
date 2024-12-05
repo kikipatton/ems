@@ -273,7 +273,12 @@
                   <h4 class="mb-1">HOUSE: {{ house.hse_number }}</h4>
                   <p class="mb-0">House Management</p>
                 </div>
-                <button type="button" class="btn btn-label-danger delete-customer">Delete Owner</button>
+                <button type="button" 
+                        class="btn {% if house.garbage_collected %}btn-label-success{% else %}btn-label-danger{% endif %}" 
+                        data-bs-toggle="modal" 
+                        data-bs-target="#garbageModal-{{ house.pk }}">
+                    {% if house.garbage_collected %}Garbage Collected{% else %}Collect Garbage{% endif %}
+                </button>
               </div>
 
               <div class="row">
@@ -652,6 +657,39 @@
                 </div>
               </div>
               <!--/ Edit Owner Modal -->
+
+              <!-- Garbage Collection Modal -->
+              <div class="modal fade" id="garbageModal-{{ house.pk }}" tabindex="-1" aria-hidden="true">
+                  <div class="modal-dialog modal-dialog-centered modal-simple">
+                      <div class="modal-content">
+                          <form method="POST" action="{% url 'garbage-collection' house.pk %}">
+                              {% csrf_token %}
+                              <div class="modal-body p-4">
+                                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                  <div class="text-center mb-4">
+                                      <h4 class="mb-2">Garbage Collection Status</h4>
+                                      <p>
+                                          {% if house.garbage_collected %}
+                                              Are you sure you want to mark garbage as uncollected?
+                                          {% else %}
+                                              Confirm garbage collection for this house?
+                                          {% endif %}
+                                      </p>
+                                  </div>
+                                  {% if house.garbage_collection_date %}
+                                      <div class="text-center mb-4">
+                                          <p>Last Collection: {{ house.garbage_collection_date|date:"Y-m-d" }}</p>
+                                      </div>
+                                  {% endif %}
+                                  <div class="text-center">
+                                      <button type="submit" class="btn btn-primary me-2">Confirm</button>
+                                      <button type="button" class="btn btn-label-secondary" data-bs-dismiss="modal">Cancel</button>
+                                  </div>
+                              </div>
+                          </form>
+                      </div>
+                  </div>
+              </div>
 
               <!-- Add New Credit Card Modal -->
               <div class="modal fade" id="upgradePlanModal" tabindex="-1" aria-hidden="true">

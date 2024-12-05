@@ -24,6 +24,14 @@ class House(models.Model):
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='developer')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    garbage_collected = models.BooleanField(
+        'Garbage Collected',
+        default=False  # Existing records will have False by default
+    )
+    garbage_collection_date = models.DateField(
+        'Last Garbage Collection Date',
+        null=True
+    )
 
     def __str__(self):
         owner = self.owner_set.first()  # Get the first owner if exists
